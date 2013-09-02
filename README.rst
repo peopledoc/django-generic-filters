@@ -9,6 +9,11 @@ It can handle RawQueryset, Python Object List as well as normal queryset.
 It uses a form to define which filters you want and add some options to
 your list view.
 
+.. image:: https://secure.travis-ci.org/novapost/django-generic-filters.png?branch=master
+   :alt: Build Status
+   :target: https://secure.travis-ci.org/novapost/django-generic-filters
+
+
 
 *******
 Example

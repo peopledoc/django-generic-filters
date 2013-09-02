@@ -2,3 +2,4 @@
 *~
 *.egg-info
 /var/
+.coverage

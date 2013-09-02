@@ -14,8 +14,8 @@ NAME = 'django-genericfilters-demo'
 README = read_relative_file('README')
 VERSION = '0.1'
 PACKAGES = ['demoproject']
-REQUIRES = ['django-generic-filters',
-            'django-nose']
+REQUIRES = ['django-generic-filters', 'mock',
+            'django-nose', 'coverage', 'rednose']
 
 
 setup(name=NAME,

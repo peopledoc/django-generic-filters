@@ -11,7 +11,7 @@ def read_relative_file(filename):
 
 
 NAME = 'django-generic-filters'
-README = read_relative_file('README')
+README = read_relative_file('README.rst')
 VERSION = read_relative_file('VERSION')
 PACKAGES = ['django_genericfilters']
 REQUIRES = ['setuptools', 'django', 'bunch', 'django-templateaddons']
@@ -21,7 +21,7 @@ if __name__ == '__main__':  # Don't run setup() when we import this module.
     setup(name=NAME,
           version=VERSION,
           description='Easy filters for your Generic ListView with Django.',
-          long_description=README.rst,
+          long_description=README,
           classifiers=['Development Status :: 4 - Beta',
                        'License :: OSI Approved :: BSD License',
                        'Programming Language :: Python :: 2.7',

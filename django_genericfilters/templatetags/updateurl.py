@@ -32,7 +32,7 @@ def token_value(bits, parser):
 
     >>> from django.template.base import Parser
     >>> parser = Parser('')
-    >>> from peopleask.theme.templatetags.updateurl import token_value
+    >>> from django_genericfilters.templatetags.updateurl import token_value
     >>> token_value('"A"', parser)
     'A'
     >>> token_value('a', parser).var
@@ -69,7 +69,7 @@ def token_kwargs(bits, parser):
 
     >>> from django.template.base import Parser
     >>> parser = Parser('')
-    >>> from peopleask.theme.templatetags.updateurl import token_kwargs
+    >>> from django_genericfilters.templatetags.updateurl import token_kwargs
     >>> token_kwargs([], parser)
     {}
     >>> bits = ['a="A"']
@@ -102,7 +102,7 @@ def token_kwargs(bits, parser):
 def update_query_string(url, updates):
     """Update query string in ``url`` with ``updates``.
 
-    >>> from peopleask.theme.templatetags.updateurl import update_query_string
+    >>> from django_genericfilters.templatetags.updateurl import update_query_string
     >>> update_query_string('/foo/?bar=baz', {'bar': 'updated'})
     '/foo/?bar=updated'
     >>> update_query_string('/foo/?bar=baz', {'bar': 'updated'})
@@ -164,7 +164,7 @@ def tag_update_query_string(parser, token):
     >>> request.get_full_path = mock.Mock(return_value='/fake')
     >>> from django.template.base import Parser, TOKEN_TEXT, Token
     >>> parser = Parser('')
-    >>> from peopleask.theme.templatetags.updateurl \
+    >>> from django_genericfilters.templatetags.updateurl \
             import tag_update_query_string
     >>> token = Token(TOKEN_TEXT, 'tag with "page"="2"')
     >>> node = tag_update_query_string(parser, token)

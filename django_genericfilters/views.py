@@ -8,10 +8,6 @@ from django.utils.translation import ugettext_lazy as _
 from bunch import Bunch
 
 
-def str2bool(v):
-    return v.lower() in ('1', 'true', 'yes', 'y', 't')
-
-
 def is_filter(value, form):
     return bool(value in form.cleaned_data and form.cleaned_data[value])
 
