@@ -45,8 +45,7 @@ class FormTestCase(unittest.TestCase):
         class Form(gf.OrderFormMixin):
             pass
 
-        with self.assertRaises(NotImplementedError):
-            Form()
+        self.assertRaises(NotImplementedError, Form)
 
 
 class FilteredFormTestCase(unittest.TestCase):
