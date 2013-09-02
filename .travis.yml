@@ -5,4 +5,4 @@ python:
 install:
     - python setup.py develop
     - cd demo; python setup.py develop; cd ..
-script: flake8 django_genericfilters && demo test
+script: demo test
