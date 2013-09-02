@@ -1,0 +1,9 @@
+############################
+About django-generic-filters
+############################
+
+.. toctree::
+
+   license
+   authors
+   changelog

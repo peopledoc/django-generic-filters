@@ -1,0 +1,84 @@
+{% load staticfiles assign paginator i18n %}
+<html>
+	<head>
+        <title>django-generic-filters demo</title>
+        <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" />
+        <link href="{% static 'css/bootstrap-switch.css' %}" rel="stylesheet" />
+        <link rel="stylesheet" href="{% static 'css/genericfilters.css' %}" />
+
+        <script type="text/javascript" src="http://codeorigin.jquery.com/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="{% static 'js/bootstrap-switch.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/genericfilters.js' %}"></script>
+
+	</head>
+	<body>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span3 well" style="margin-top: 20px;">
+                    {% include 'genericfilters/filter_list.html' %}
+                </div>
+                <div class="span9">
+                    <h3>{% trans "All users" %} ({{ paginator.count }})</h3>
+
+                    {% block actions %}
+                      <div class="well">
+                        <div class="span2">
+                          <div class="btn-group">
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                              <i class="icon-arrow-down"></i> {% trans "Sort" %} <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                              {% include 'genericfilters/order_by_list.html' %}
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="span10">
+                          {% assign name="placeholder" %}{% trans "Username, Last name, First name, Email" %}{% endassign %}
+                          {% include 'genericfilters/query_filter.html' %}
+                            </div>
+                      </div>
+                    {% endblock %}
+                    
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>{% trans "Last name" %}</th>
+                          <th>{% trans "First name" %}</th>
+                          <th>{% trans "Email" %}</th>
+                          <th>{% trans "Active?" %}</th>
+                          <th>{% trans "Staff?" %}</th>
+                          <th>{% trans "Superuser?" %}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for user in users %}
+                          <tr>
+                            <td>{{ user.last_name }}</td>
+                            <td>{{ user.first_name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                              <div class="make-switch">
+                                <input type="checkbox" disabled{% if user.is_active %} checked{% endif %} />
+                              </div>
+                            </td>
+                            <td>
+                              <div class="make-switch">
+                                <input type="checkbox" disabled{% if user.is_staff %} checked{% endif %} />
+                              </div>
+                            </td>
+                            <td>
+                              <div class="make-switch">
+                                <input type="checkbox" disabled{% if user.is_superuser %} checked{% endif %} />
+                              </div>
+                            </td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                    {% paginator %}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

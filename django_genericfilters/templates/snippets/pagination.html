@@ -1,0 +1,36 @@
+{% load updateurl %}
+        {% if page_obj.paginator.page_range|length > 1 %}
+        <div class="pagination center">
+            <ul>
+            {% if page_obj.has_previous %} 
+                <li><a href="{% update_query_string with 'page'=page_obj.previous_page_number %}">&lt;</a></li>
+            {% else %}
+                <li class="disabled"><a href="#">&lt;</a></li>
+            {% endif %}
+
+            {% if show_first %}
+              <li><a href="?page={% update_query_string with 'page'=1 %}">1</a></span>
+              <li><a>...</a></li>
+            {% endif %}
+
+            {% for num_page in page_numbers %}
+            {% if num_page == page_obj.number %}
+             <li class="active"><a href="{% update_query_string with 'page'=num_page %}">{{num_page}}</a></li>
+             {% else %}
+             <li><a href="{% update_query_string with 'page'=num_page %}">{{num_page}}</a></li>
+             {% endif %}
+            {% endfor %}
+
+            {% if show_last %}
+              <li><a>...</a></li>
+              <li><a href="{% update_query_string with 'page'=paginator.num_pages %}">{{ paginator.num_pages }}</a></span>
+            {% endif %}
+
+            {% if page_obj.has_next %} 
+                <li><a href="{% update_query_string with 'page'=page_obj.next_page_number %}">&gt;</a></li>
+            {% else %}
+                <li class="disabled"><a href="#">&gt;</a></li>
+            {% endif %}
+            </ul>
+        </div>
+        {% endif %}

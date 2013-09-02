@@ -1,0 +1,19 @@
+############
+Installation
+############
+
+This project is open-source, published under BSD license.
+See :doc:`/about/license` for details.
+
+If you want to install a development environment, you should go to :doc:`/dev`
+documentation.
+
+Install the package with your favorite Python installer. As an example, with
+pip:
+
+.. code-block:: sh
+
+   pip install django-generic-filters
+
+Don't forget to register your application in your Django
+``INSTALLED_APPS`` setting.

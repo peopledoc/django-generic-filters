@@ -1,0 +1,28 @@
+{% load i18n updateurl %}
+<form method="GET" id="search_form" style="display: block;">
+  <ul class="nav nav-list">
+    {# Hidden fields #}
+    {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+
+    {# Visible fields #}
+    {% for field in form.visible_fields %}
+      <li class="nav-header">{{ field.label }}</li>
+      <li>{{ field }}</li>
+    {% endfor %}
+
+    {# FilterList #}
+    {% for filter in filters %}
+      <li class="nav-header">{{ filter.label }}</li>
+      {% for choice in filter.choices %}
+        <li><a{% if not choice.is_selected %} href="{% update_query_string with filter.name=choice.value %}"{% else %} class="selected"{% endif %}>{{ choice.label }}</a></li>
+      {% endfor %}
+    {% endfor %}
+  </ul>
+</form>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#search_form select').change(search_submit);
+    });
+</script>

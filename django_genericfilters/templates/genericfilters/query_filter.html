@@ -1,0 +1,9 @@
+{% load i18n assign %}
+
+{% assign name="default" %}{% trans "Name" %}{% endassign %}
+
+<form class="form-search input-append" onsubmit="search_submit(); return false;" style="width: 100%;">
+  <span class="add-on"><i class="icon-search"></i></span>
+  <input id="query" value="{{ form.query.value|default:'' }}" type="search" placeholder="{% firstof placeholder default %}"  style="width: 80%;" />
+  <button type="submit" class="btn">{% trans "Search" %}</button>
+</form>

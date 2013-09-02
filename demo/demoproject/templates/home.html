@@ -1,0 +1,17 @@
+{% load url from future %}
+<html>
+	<head>
+        <title>django-generic-filters demo</title>
+	</head>
+	<body>
+        <h1>Welcome to django-generic-filters demo!</h1>
+        <p>Here are some demo links. Browse the code to see how they are implemented</p>
+
+        <h2>Optimized filters</h2>
+        <p>Since nginx and other servers aren't installed on the demo, you
+           will get raw "X-Sendfile" responses. Look at the headers!</p>
+        <ul>
+            <li><a href="{% url 'user_filter_view' %}">Django User List View</a></li>
+        </ul>
+    </body>
+</html>

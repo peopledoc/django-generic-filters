@@ -1,0 +1,9 @@
+Changelog
+=========
+
+0.1 (unreleased)
+----------------
+
+- Introduced generic mixin and FilteredView
+- Introduced demo app
+- Initialized project
