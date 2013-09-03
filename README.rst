@@ -23,7 +23,7 @@ Example
 
 .. code-block:: python
 
-    from django_genericfilters import FilteredListView
+    from django_genericfilters.views import FilteredListView
 
 
     class UserListView(FilteredListView):
