@@ -14,7 +14,7 @@
     {% for filter in filters %}
       <li class="nav-header">{{ filter.label }}</li>
       {% for choice in filter.choices %}
-        <li><a{% if not choice.is_selected %} href="{% update_query_string with filter.name=choice.value %}"{% else %} class="selected"{% endif %}>{{ choice.label }}</a></li>
+        <li><a{% if not choice.is_selected %} href="{% update_query_string with filter.name=choice.value %}"{% else %} class="selected"{% endif %}>{{ choice.label|safe }}</a></li>
       {% endfor %}
     {% endfor %}
   </ul>
