@@ -61,10 +61,12 @@ class FilteredListView(FormMixin, ListView):
         # Handle QueryFormMixin
         if is_filter('query', form):
             query = form.cleaned_data['query']
+            query_words = query.split()
             filters = None
             for f in self.search_fields:
-                q = Q(**{f + '__icontains': query})
-                filters = filters | q if filters else q
+                for word in query_words:
+                    q = Q(**{f + '__icontains': word})
+                    filters = filters | q if filters else q
             if filters:
                 queryset = queryset.filter(filters)
 
