@@ -137,11 +137,12 @@ class FilteredListView(FormMixin, ListView):
                     else:
                         new_choice.is_selected = False
                     new_filter.choices.append(new_choice)
-                if not self.form.fields[field].required \
-                    and not [c for c in new_filter.choices if c.0 == '']:
-                        all_choice = Bunch(value='', label=_('All'),
-                                           is_selected=(not selected))
-                        new_filter.choices.insert(0, all_choice)
+
+                if not self.form.fields[field].required and \
+                        not [c for c in new_filter.choices if c.value == '']:
+                    all_choice = Bunch(value='', label=_('All'),
+                                       is_selected=(not selected))
+                    new_filter.choices.insert(0, all_choice)
                 filters.append(new_filter)
 
         return filters
