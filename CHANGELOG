@@ -1,22 +1,25 @@
 Changelog
 =========
 
-0.4 (unreleased)
+0.4 (2013-10-01)
 ----------------
 
-- Nothing changed yet.
+- Search for each terms instead of searching for the full string in order.
+- Let use redefine the All value
+- Allow html in choice labels
+- Fix import path in documentation.
 
 
 0.3 (2013-09-03)
 ----------------
 
-- Nothing changed yet.
+- Added README.rst in the manifest file.
 
 
 0.2 (2013-09-03)
 ----------------
 
-- Added README.rst in the manifest file.
+- Fix AssertRaises to work with 2.6
 
 
 0.1 (2013-09-02)
