@@ -20,4 +20,3 @@ class FilteredListView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['users']), 1)
-        

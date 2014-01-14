@@ -13,7 +13,7 @@ class FieldTestCase(unittest.TestCase):
             test = gf.ChoiceField(label='Test')
 
         self.form = Form()
-        
+
     def test_filtered_choice_field_required(self):
         self.assertFalse(self.form.fields['test'].required)
 

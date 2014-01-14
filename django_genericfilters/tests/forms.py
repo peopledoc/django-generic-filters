@@ -57,7 +57,6 @@ class FilteredFormTestCase(unittest.TestCase):
             return (('last_name', 'Last Name'),
                     ('first_name', 'First Name'))
 
-
     def test_empty_form_bound(self):
         form = self.Form(data={}, initial={"order_by": 'last_name'})
         self.assertTrue(form.is_bound)

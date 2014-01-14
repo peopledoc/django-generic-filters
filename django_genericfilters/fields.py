@@ -10,7 +10,7 @@ class ChoiceField(forms.ChoiceField):
         kwargs.setdefault('required', False)
 
         if 'choices' not in kwargs:
-            kwargs['choices'] = (('yes', kwargs.get('label', _('Yes'))),
-                                 ('no', _('No %(label)s') % {'label': kwargs.get('label', '')}))
+            kwargs['choices'] = (
+                ('yes', kwargs.get('label', _('Yes'))),
+                ('no', _('No %(label)s') % {'label': kwargs.get('label', '')}))
         super(ChoiceField, self).__init__(*args, **kwargs)
-

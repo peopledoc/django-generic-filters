@@ -61,7 +61,6 @@ class FilteredListView(FormMixin, ListView):
                 filters[field] = field
         return filters
 
-
     def form_valid(self, form):
         """Return queryset with form."""
         # Get default queryset from ListView parameters (queryset, model, ...)
@@ -91,7 +90,6 @@ class FilteredListView(FormMixin, ListView):
                 filters[k] = field
         queryset = queryset.filter(**filters)
 
-
         # Handle OrderFormMixin
         if is_filter('order_by', form):
             order_field = form.cleaned_data['order_by']
@@ -103,7 +101,6 @@ class FilteredListView(FormMixin, ListView):
         queryset = queryset.distinct()
 
         return queryset
-
 
     def form_invalid(self, form):
         """Return default queryset."""
