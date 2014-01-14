@@ -49,6 +49,19 @@ class FilteredListView(FormMixin, ListView):
         else:
             return self.form_invalid(self.form)
 
+    def get_qs_filters(self):
+        """
+        retreive filters from "filter_fields" and return them as a
+        dict to be used by self.form_valid
+        """
+
+        filters = {}
+        if hasattr(self, 'filter_fields'):
+            for field in self.filter_fields:
+                filters[field] = field
+        return filters
+
+
     def form_valid(self, form):
         """Return queryset with form."""
         # Get default queryset from ListView parameters (queryset, model, ...)
@@ -70,6 +83,15 @@ class FilteredListView(FormMixin, ListView):
             if filters:
                 queryset = queryset.filter(filters)
 
+        # Handle get_qs_filters
+        filters = {}
+        for k, v in self.get_qs_filters().iteritems():
+            field = form.cleaned_data.get(v)
+            if field:
+                filters[k] = field
+        queryset = queryset.filter(**filters)
+
+
         # Handle OrderFormMixin
         if is_filter('order_by', form):
             order_field = form.cleaned_data['order_by']
@@ -79,7 +101,9 @@ class FilteredListView(FormMixin, ListView):
 
         # Handle distinct for Join in some Querysets
         queryset = queryset.distinct()
+
         return queryset
+
 
     def form_invalid(self, form):
         """Return default queryset."""
