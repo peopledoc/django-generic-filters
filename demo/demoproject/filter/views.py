@@ -24,7 +24,7 @@ class UserListView(FilteredListView):
     def form_valid(self, form):
         """Return the queryset when form has been submitted."""
         queryset = super(UserListView, self).form_valid(form)
-        
+
         # Handle specific fields of the custom ListForm
         # Others are automatically handled by FilteredListView
 
@@ -42,7 +42,7 @@ class UserListView(FilteredListView):
             queryset = queryset.filter(is_superuser=True)
         elif form.cleaned_data['is_superuser'] == 'no':
             queryset = queryset.filter(is_superuser=False)
-        
+
         return queryset
 
 
