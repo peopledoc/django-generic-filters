@@ -1,5 +1,5 @@
 import unittest
-
+import sys
 from django import forms
 from django.db import models
 
@@ -9,19 +9,26 @@ from django_genericfilters import forms as gf
 
 class FilteredViewTestCase(unittest.TestCase):
 
+    def assertIn(self, a, b, msg=None):
+        if sys.version_info[:2] == (2, 6):
+            # for 2.6 compatibility
+            if not a in b:
+                self.fail("%s is not in %b" % (repr(a), repr(b)))
+        else:
+            super(FilteredViewTestCase, self).assertIn(a, b, msg=msg)
+
     class QueryModel(models.Model):
         """
         Define a dummy model for this test case
         """
         city = models.CharField(max_length=250)
 
-
     class Form(gf.OrderFormMixin, gf.PaginationFormMixin,
                gf.QueryFormMixin, gf.FilteredForm):
 
         city = forms.ChoiceField(
-            label= 'city', required=False,
-            choices = (
+            label='city', required=False,
+            choices=(
                 ("N", "Nantes"),
                 ("P", "Paris")
                 )
@@ -39,7 +46,7 @@ class FilteredViewTestCase(unittest.TestCase):
         setattr(
             a,
             'request',
-            type('obj', (object,),{"method": "GET" ,"GET":{"city":"N"}})
+            type('obj', (object, ), {"method": "GET", "GET": {"city": "N"}})
             )
 
         self.assertEqual({'city': 'city'}, a.get_qs_filters())
