@@ -13,13 +13,19 @@ def is_filter(value, form):
 
 
 class FilteredListView(FormMixin, ListView):
-    """Base view where GET form is used to filter queryset."""
+    """A Generic ListView used to filter and order objects."""
     initial = {'page': 1, 'paginate_by': 10}
 
     def is_form_submitted(self):
+        """
+        Return True if the form is already submited. False otherwise
+        """
         return self.request.method == 'GET' and self.request.GET
 
     def get_initial(self):
+        """
+        add "order_by" and "order_reverse" to the initials.
+        """
         kwargs = super(FilteredListView, self).get_initial()
         if hasattr(self, 'default_order'):
             order_by = self.default_order
@@ -51,7 +57,6 @@ class FilteredListView(FormMixin, ListView):
 
     def get_qs_filters(self):
         """
-
         retreive filters from "qs_filter_fields" or "filter_fields"
         and return them as a dict to be used by self.form_valid
         """
@@ -68,7 +73,13 @@ class FilteredListView(FormMixin, ListView):
         return filters
 
     def form_valid(self, form):
-        """Return queryset with form."""
+        """
+        The form_valid is reponsible for filtering and ordering the
+        base queryset. It return a queryset.
+
+        :param: `django.forms.Forms`
+        :return: `django.db.models.query.QuerySet`
+        """
         # Get default queryset from ListView parameters (queryset, model, ...)
         queryset = self.__get_queryset()
 
@@ -109,7 +120,13 @@ class FilteredListView(FormMixin, ListView):
         return queryset
 
     def form_invalid(self, form):
-        """Return default queryset."""
+        """As the form is invalid, form_invalid return the default
+        queryset without filtering
+
+        :param: `django.forms.Forms`
+        :return: `django.db.models.query.QuerySet`
+
+        """
         queryset = self.__get_queryset()
         if self.order_by_list:
             queryset = queryset.order_by(*self.order_by_list)
@@ -117,7 +134,10 @@ class FilteredListView(FormMixin, ListView):
 
     @property
     def form(self):
-        """Return form."""
+        """
+        guess the form to be used and hide the filter_fields in the template
+
+        """
         try:
             return self._form
         except AttributeError:
@@ -132,6 +152,10 @@ class FilteredListView(FormMixin, ListView):
             return self._form
 
     def get_context_data(self, **kwargs):
+        """
+        Add a filter pagination, a list of filters and self.form to
+        the context to be rendered by the view.
+        """
         kwargs.setdefault('page', 1)
         kwargs = ListView.get_context_data(self, **kwargs)
         kwargs['form'] = self.form
@@ -139,7 +163,10 @@ class FilteredListView(FormMixin, ListView):
         return kwargs
 
     def get_filters(self):
-        """Convert some ChoiceField in a list of choices in the template."""
+        """
+        Convert some ChoiceField in a list of choices in the
+        template.
+        """
         filters = []
 
         if hasattr(self, 'filter_fields'):

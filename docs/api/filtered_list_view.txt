@@ -1,0 +1,101 @@
+####################
+FilteredListView API
+####################
+
+FilteredListView is a generic ListView allowing to filter queryset.
+It supports RawQuerySet, Python Object List as well as normal
+queryset.
+
+It use a form to define which filters you want and some options to
+control the way querysets must be managed.
+
+
+Example
+*******
+
+First we define a form to handle our filters
+
+.. code-block:: python
+
+    from django import forms
+    from django_genericfilters import forms as gf
+
+
+    class TicketListForm(gf.QueryFormMixin, gf.PaginationFormMixin,
+                         gf.OrderFormMixin, gf.FilteredForm):
+        query = forms.CharField(label=_('Query'), required=False)
+
+        priority = forms.ChoiceField(label=_('Priority'),
+                                 required=False,
+                                 choices=(
+                                     ('0', 'High'),
+                                     ('1', 'Normal'),
+                                     ('2', 'Low')
+                                 )
+
+This form handle filter on a raw query and priority.
+
+
+.. code-block:: python
+
+    from django_genericfilters.views import FilteredListView
+    from myapp.models import Ticket
+
+
+    class TicketListView(FilteredListView):
+        model = Ticket
+        paginate_by = 10
+        form_class = TicketListForm
+        order_by_list = ['-last_updated_at']
+        search_fields = ['creator__last_name', 'creator__first_name',
+                     'subject', 'body']
+        filter_fields = ['status', 'priority']
+        qs_filter_fields = {'category__last_name': 'category',
+                            'status': 'status',
+                            'priority': 'priority'
+                        }
+        default_order = 'last_updated_at'
+
+
+
+FilteredListView Options
+************************
+
+TicketListView define a set of useful specific options:
+
+order_by_list
+-------------
+
+a list of fields to be used as ordering in the template
+    
+search_fields
+-------------
+
+a list of fields to search against with the "query" field defined on
+the form (see above)
+
+filter_fields
+-------------
+
+a list of fields used to construct the form filters in
+the template. In this example, we define status and priority. By
+default, if we do not define a qs_filter_fields it will be used to
+filter the resulting queryset as well.
+
+qs_filter_fields
+----------------
+
+a dict used to filter the results queryset. Useful if you need to make
+complex filters or related models filters.
+
+default_order
+-------------
+
+the order you want your results to be sorted by default.
+
+FilteredListView Method
+***********************
+
+.. autoclass:: django_genericfilters.views.FilteredListView
+    :members:
+

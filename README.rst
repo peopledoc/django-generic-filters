@@ -42,7 +42,7 @@ Example
         def form_valid(self, form):
             """Return the queryset when form has been submitted."""
             queryset = super(UserListView, self).form_valid(form)
-            
+
             # Handle specific fields of the custom ListForm
             # Others are automatically handled by FilteredListView
 
@@ -60,7 +60,7 @@ Example
                 queryset = queryset.filter(is_superuser=True)
             elif form.cleaned_data['is_superuser'] == 'no':
                 queryset = queryset.filter(is_superuser=False)
-            
+
             return queryset
 
 
@@ -71,7 +71,7 @@ Example
     from django import forms
     from django.utils.translation import ugettext_lazy as _
     from django_genericfilters import forms as gf
-    
+
 
     class UserListForm(gf.QueryFormMixin, gf.PaginationFormMixin,
                        gf.OrderFormMixin, gf.FilteredForm):
@@ -82,12 +82,12 @@ Example
         is_staff = gf.ChoiceField(label=_('Staff'))
 
         is_superuser = gf.ChoiceField(label=_('Superuser')))
-    
+
         def get_order_by_choices(self):
             return [('date_joined', _(u'date joined')),
                     ('last_login', _(u'last login')),
                     ('last_name', _(u'Name'))]
-    
+
 
 
 *****
