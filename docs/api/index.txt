@@ -1,0 +1,10 @@
+*************************
+Django Generic Filter API
+*************************
+
+
+.. include:: filtered_list_view.txt
+
+    
+    
+    

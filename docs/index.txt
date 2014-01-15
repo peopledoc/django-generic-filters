@@ -11,5 +11,6 @@ Contents
 
    demo
    install
+   api/index
    about/index
    dev
