@@ -65,7 +65,7 @@ class FilteredFormTestCase(unittest.TestCase):
 
     def test_form_order_by_bound(self):
         form = self.Form(data={'order_by': 'first_name', 'order_reverse': 0},
-                    initial={"order_by": 'last_name'})
+                         initial={"order_by": 'last_name'})
         self.assertTrue(form.is_bound)
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data['order_by'], 'first_name')

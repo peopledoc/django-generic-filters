@@ -31,8 +31,8 @@ class FilteredViewTestCase(unittest.TestCase):
             choices=(
                 ("N", "Nantes"),
                 ("P", "Paris")
-                )
             )
+        )
 
         def get_order_by_choices(self):
             return (('last_name', 'Last Name'),
@@ -40,18 +40,18 @@ class FilteredViewTestCase(unittest.TestCase):
 
     def test_filtered_list_view(self):
         a = views.FilteredListView(filter_fields=['city'],
-                             form_class=self.Form,
-                             model=self.QueryModel)
+                                   form_class=self.Form,
+                                   model=self.QueryModel)
 
         setattr(
             a,
             'request',
             type('obj', (object, ), {"method": "GET", "GET": {"city": "N"}})
-            )
+        )
 
         self.assertEqual({'city': 'city'}, a.get_qs_filters())
         a.form.is_valid()
         self.assertIn(
             'WHERE "tests_querymodel"."city" = N',
             a.form_valid(a.form).query.__str__()
-            )
+        )
