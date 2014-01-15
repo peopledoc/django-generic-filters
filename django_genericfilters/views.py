@@ -51,14 +51,20 @@ class FilteredListView(FormMixin, ListView):
 
     def get_qs_filters(self):
         """
-        retreive filters from "filter_fields" and return them as a
-        dict to be used by self.form_valid
+
+        retreive filters from "qs_filter_fields" or "filter_fields"
+        and return them as a dict to be used by self.form_valid
         """
 
         filters = {}
-        if hasattr(self, 'filter_fields'):
+
+        if hasattr(self, 'qs_filter_fields'):
+            filters = self.qs_filter_fields
+
+        elif hasattr(self, 'filter_fields'):
             for field in self.filter_fields:
                 filters[field] = field
+
         return filters
 
     def form_valid(self, form):
