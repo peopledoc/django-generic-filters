@@ -104,6 +104,7 @@ def update_query_string(url, updates):
 
     >>> from django_genericfilters.templatetags.updateurl import (
     ...     update_query_string)
+
     >>> update_query_string('/foo/?bar=baz', {'bar': 'updated'})
     '/foo/?bar=updated'
     >>> update_query_string('/foo/?bar=baz', {'bar': 'updated'})
