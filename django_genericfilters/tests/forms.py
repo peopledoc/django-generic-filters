@@ -52,8 +52,7 @@ class FormTestCase(unittest.TestCase):
 class FilteredFormTestCase(unittest.TestCase):
 
     # Define a form class for this test case
-    class Form(gf.OrderFormMixin, gf.PaginationFormMixin,
-               gf.QueryFormMixin, gf.FilteredForm):
+    class Form(gf.FilteredForm):
 
         def get_order_by_choices(self):
             return (('last_name', 'Last Name'),

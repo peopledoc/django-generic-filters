@@ -18,11 +18,10 @@ First we define a form to handle our filters
 .. code-block:: python
 
     from django import forms
-    from django_genericfilters import forms as gf
+    from django_genericfilters.forms import FilteredForm
 
 
-    class TicketListForm(gf.QueryFormMixin, gf.PaginationFormMixin,
-                         gf.OrderFormMixin, gf.FilteredForm):
+    class TicketListForm(FilteredForm):
         query = forms.CharField(label=_('Query'), required=False)
 
         priority = forms.ChoiceField(label=_('Priority'),
@@ -67,7 +66,7 @@ order_by_list
 -------------
 
 a list of fields to be used as ordering in the template
-    
+
 search_fields
 -------------
 
@@ -98,4 +97,3 @@ FilteredListView Method
 
 .. autoclass:: django_genericfilters.views.FilteredListView
     :members:
-
