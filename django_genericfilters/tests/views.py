@@ -4,7 +4,7 @@ from django import forms
 from django.db import models
 
 from django_genericfilters import views
-from django_genericfilters import forms as gf
+from django_genericfilters.forms import FilteredForm
 
 
 class ParentModel(models.Model):
@@ -32,8 +32,7 @@ class FilteredViewTestCase(unittest.TestCase):
         city = models.CharField(max_length=250)
         country = models.CharField(max_length=250)
 
-    class Form(gf.OrderFormMixin, gf.PaginationFormMixin,
-               gf.QueryFormMixin, gf.FilteredForm):
+    class Form(FilteredForm):
 
         city = forms.ChoiceField(
             label='city', required=False,

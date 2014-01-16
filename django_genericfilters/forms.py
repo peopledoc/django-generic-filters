@@ -92,36 +92,10 @@ class OrderFormMixin(object):
             _("Don't forget to implements get_order_by_choices"))
 
 
-class FilteredForm(forms.Form):
+class FilteredForm(OrderFormMixin, PaginationFormMixin,
+                   QueryFormMixin, forms.Form):
     """
-    FilteredForm is like a classic forms. But It implement a custom
-    widget declaration for form fields.
-
-    To add a custom widget on a field, you have to define a Meta class
-    with a "widget" attribut.
-
-    This attribut must be a dict.
-
-    Key is the name of you field, value is the widget to be used on that field.
-
-    Example:
-
-
-    .. code-block:: python
-
-        class MyForm(FilteredForm):
-            class Meta:
-                widgets = {"name": MyCustomWidget}
-
-    in this example you have to define MyCustomWidget and your form
-    should contain a "name" field (via your model for example).
-
+    FilteredForm is like a classic forms. But It use OrderFormMixin,
+    PaginationFormMixin and QueryFormMixin
     """
-
-    def __init__(self, *args, **kwargs):
-        super(FilteredForm, self).__init__(*args, **kwargs)
-        # It is not a model form so it doesn't work alone but I like this API.
-        if hasattr(self, 'Meta'):
-            for field in self.Meta.widgets:
-                if field in self.fields:
-                    self.fields[field].widget = self.Meta.widgets[field]
+    pass
