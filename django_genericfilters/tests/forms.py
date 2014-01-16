@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 import unittest
 
+from django import forms
+
 from django_genericfilters import forms as gf
 
 
 class FormTestCase(unittest.TestCase):
 
     def test_query_form_mixin(self):
-        class Form(gf.QueryFormMixin):
+        class Form(gf.QueryFormMixin, forms.Form):
             pass
 
         form = Form()
@@ -19,7 +21,7 @@ class FormTestCase(unittest.TestCase):
             return (('last_name', 'Last Name'),
                     ('first_name', 'First Name'))
 
-        class Form(gf.OrderFormMixin):
+        class Form(gf.OrderFormMixin, forms.Form):
             def get_order_by_choices(self):
                 return get_order_by_choices()
 
@@ -32,7 +34,7 @@ class FormTestCase(unittest.TestCase):
                          list(get_order_by_choices()))
 
     def test_pagination_form_mixin(self):
-        class Form(gf.PaginationFormMixin):
+        class Form(gf.PaginationFormMixin, forms.Form):
             pass
 
         form = Form()
@@ -74,4 +76,16 @@ class FilteredFormTestCase(unittest.TestCase):
         form = self.Form()
 
         self.assertEqual(str(type(form.fields['query'].widget)),
+                         "<class 'django.forms.widgets.HiddenInput'>")
+
+        self.assertEqual(str(type(form.fields['page'].widget)),
+                         "<class 'django.forms.widgets.HiddenInput'>")
+
+        self.assertEqual(str(type(form.fields['paginate_by'].widget)),
+                         "<class 'django.forms.widgets.HiddenInput'>")
+
+        self.assertEqual(str(type(form.fields['order_by'].widget)),
+                         "<class 'django.forms.widgets.HiddenInput'>")
+
+        self.assertEqual(str(type(form.fields['order_reverse'].widget)),
                          "<class 'django.forms.widgets.HiddenInput'>")
