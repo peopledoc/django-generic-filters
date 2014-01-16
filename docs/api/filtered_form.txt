@@ -1,2 +1,5 @@
 FilteredForm
 ************
+
+.. automodule:: django_genericfilters.forms
+    :members:

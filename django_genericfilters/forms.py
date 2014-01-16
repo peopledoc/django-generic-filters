@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+"""
+django generic filters implement a set of mixin to work with ordered,
+paginated and filtered queryset.
+
+"""
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
@@ -76,9 +81,11 @@ class OrderFormMixin(object):
 
         Example:
 
-        def get_order_by_choices(self):
-            return [("1", "choice1"),
-                    ("2", "choice2")]
+        .. code-block:: python
+
+            def get_order_by_choices(self):
+                return [("1", "choice1"),
+                        ("2", "choice2")]
         """
 
         raise NotImplementedError(
@@ -100,9 +107,11 @@ class FilteredForm(forms.Form):
     Example:
 
 
-    class MyForm(FilteredForm):
-        class Meta:
-            widgets = {"name": MyCustomWidget}
+    .. code-block:: python
+
+        class MyForm(FilteredForm):
+            class Meta:
+                widgets = {"name": MyCustomWidget}
 
     in this example you have to define MyCustomWidget and your form
     should contain a "name" field (via your model for example).

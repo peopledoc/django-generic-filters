@@ -5,6 +5,8 @@ Django Generic Filter API
 
 .. include:: filtered_list_view.txt
 
+.. include:: filtered_form.txt
+
     
     
     
