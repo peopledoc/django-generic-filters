@@ -29,8 +29,7 @@ class FilteredListView(FormMixin, ListView):
         kwargs = super(FilteredListView, self).get_initial()
         if hasattr(self, 'default_order'):
             order_by = self.default_order
-            if order_by.startswith('-'):
-                kwargs['order_by'] = order_by
+            kwargs['order_by'] = order_by
 
         return kwargs
 
