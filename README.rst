@@ -96,7 +96,7 @@ Forms
 
 Several form mixin are provided to cover frequent use cases:
 
-* ``OrderFormMixin`` with order_by fields.
+* ``OrderFormMixin`` with order_by and order_reverse fields.
 * ``PaginationFormMixin`` with page and paginate_by.
 * ``QueryFormMixin`` for little full-text search using icontains.
 
