@@ -20,10 +20,7 @@ class FilteredListView(FormMixin, ListView):
         """
         Return True if the form is already submited. False otherwise
         """
-        if self.request.method == 'GET':
-            return True
-
-        return False
+        return self.request.method == 'GET'
 
     def get_initial(self):
         """
@@ -34,7 +31,7 @@ class FilteredListView(FormMixin, ListView):
             order_by = self.default_order
 
             kwargs['order_by'] = order_by
-            kwargs['order_reverse'] = 1 if order_by.startswith('-') else 0
+            kwargs['order_reverse'] = order_by.startswith('-')
 
         return kwargs
 
