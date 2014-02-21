@@ -20,7 +20,10 @@ class FilteredListView(FormMixin, ListView):
         """
         Return True if the form is already submited. False otherwise
         """
-        return self.request.method == 'GET' and self.request.GET
+        if self.request.method == 'GET':
+            return True
+
+        return False
 
     def get_initial(self):
         """
@@ -29,7 +32,9 @@ class FilteredListView(FormMixin, ListView):
         kwargs = super(FilteredListView, self).get_initial()
         if hasattr(self, 'default_order'):
             order_by = self.default_order
+
             kwargs['order_by'] = order_by
+            kwargs['order_reverse'] = 1 if order_by.startswith('-') else 0
 
         return kwargs
 
@@ -108,6 +113,9 @@ class FilteredListView(FormMixin, ListView):
             order_field = form.cleaned_data['order_by']
             queryset = queryset.order_by(order_field)
 
+        if is_filter('order_reverse', form):
+            queryset = queryset.reverse()
+
         # Handle distinct for Join in some Querysets
         queryset = queryset.distinct()
 
@@ -155,12 +163,6 @@ class FilteredListView(FormMixin, ListView):
         kwargs = ListView.get_context_data(self, **kwargs)
         kwargs['form'] = self.form
         kwargs['filters'] = self.get_filters()
-        kwargs['order_reverse'] = 0
-
-        if self.is_form_submitted():
-            order_by = self.form.cleaned_data['order_by']
-            if order_by.startswith('-'):
-                kwargs['order_reverse'] = 1
 
         return kwargs
 

@@ -58,6 +58,10 @@ class OrderFormMixin(object):
             required=False,
             widget=forms.HiddenInput,
             choices=self.get_order_by_choices())
+        self.fields['order_reverse'] = forms.BooleanField(
+            label=_('order by'),
+            required=False,
+            widget=forms.HiddenInput)
 
     def clean_order_by(self):
         if self['order_by'].html_name not in self.data:
