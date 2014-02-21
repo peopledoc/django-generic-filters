@@ -28,6 +28,7 @@ class FormTestCase(unittest.TestCase):
         form = Form()
 
         self.assertTrue('order_by' in form.fields)
+        self.assertTrue('order_reverse' in form.fields)
 
         self.assertEqual(form.fields['order_by'].choices,
                          list(get_order_by_choices()))
@@ -64,7 +65,7 @@ class FilteredFormTestCase(unittest.TestCase):
         self.assertEqual(form.cleaned_data['order_by'], 'last_name')
 
     def test_form_order_by_bound(self):
-        form = self.Form(data={'order_by': 'first_name'},
+        form = self.Form(data={'order_by': 'first_name', 'order_reverse': 0},
                          initial={"order_by": 'last_name'})
         self.assertTrue(form.is_bound)
         self.assertTrue(form.is_valid())
@@ -83,4 +84,7 @@ class FilteredFormTestCase(unittest.TestCase):
                          "<class 'django.forms.widgets.HiddenInput'>")
 
         self.assertEqual(str(type(form.fields['order_by'].widget)),
+                         "<class 'django.forms.widgets.HiddenInput'>")
+
+        self.assertEqual(str(type(form.fields['order_reverse'].widget)),
                          "<class 'django.forms.widgets.HiddenInput'>")
