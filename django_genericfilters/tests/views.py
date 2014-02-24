@@ -6,6 +6,17 @@ from django.db import models
 from django_genericfilters import views
 from django_genericfilters.forms import FilteredForm
 
+from django.test import RequestFactory
+
+
+def setup_view(view, request, *args, **kwargs):
+    """*args and **kwargs you could pass to ``reverse()``."""
+    view.request = request
+    view.args = args
+    view.kwargs = kwargs
+
+    return view
+
 
 class ParentModel(models.Model):
     """
@@ -96,3 +107,19 @@ class FilteredViewTestCase(unittest.TestCase):
             'WHERE "tests_parentmodel"."name" = S ',
             b.form_valid(b.form).query.__str__()
         )
+
+    def test_is_form_submitted_method(self):
+        """Is form submitted return True if request method is a GET."""
+        request = RequestFactory().get('/fake', {"foo": "bar"})
+        view = setup_view(views.FilteredListView(), request)
+        assert view.is_form_submitted() is True
+
+        request = RequestFactory().post('/fake', {"foo": "bar"})
+        view = setup_view(views.FilteredListView(), request)
+        assert view.is_form_submitted() is False
+
+    def test_is_form_submitted_no_args(self):
+        """Is form submitted return False if querystring is empty."""
+        request = RequestFactory().get('/fake')
+        view = setup_view(views.FilteredListView(), request)
+        assert view.is_form_submitted() is False
