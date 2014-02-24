@@ -15,6 +15,9 @@ def is_filter(value, form):
 class FilteredListView(FormMixin, ListView):
     """A Generic ListView used to filter and order objects."""
     initial = {'page': 1, 'paginate_by': 10}
+    #: Default ordering for queryset.
+    #: If None (default) fallback to model's default ordering.
+    default_order = None
 
     def is_form_submitted(self):
         """
@@ -27,7 +30,7 @@ class FilteredListView(FormMixin, ListView):
         add "order_by" and "order_reverse" to the initials.
         """
         kwargs = super(FilteredListView, self).get_initial()
-        if hasattr(self, 'default_order'):
+        if self.default_order:
             order_by = self.default_order
 
             kwargs['order_by'] = order_by
@@ -119,16 +122,22 @@ class FilteredListView(FormMixin, ListView):
         return queryset
 
     def form_invalid(self, form):
-        """As the form is invalid, form_invalid return the default
-        queryset without filtering
+        """Return queryset when submitted form is invalid.
+
+        Default implementation uses :meth:`form_empty`.
 
         :param: `django.forms.Forms`
         :return: `django.db.models.query.QuerySet`
 
         """
+        return self.form_empty()
+
+    def form_empty(self):
+        """Return queryset used when form is not submitted."""
         queryset = self.__get_queryset()
-        if self.order_by_list:
-            queryset = queryset.order_by(*self.order_by_list)
+        if self.default_order:
+            queryset = queryset.order_by(self.default_order)
+
         return queryset
 
     @property
