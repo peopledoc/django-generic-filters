@@ -10,7 +10,14 @@ from django.test import RequestFactory
 
 
 def setup_view(view, request, *args, **kwargs):
-    """*args and **kwargs you could pass to ``reverse()``."""
+    """Mimic as_view() returned callable, but returns view instance.
+
+    args and kwargs are the same you would pass to ``reverse()``
+
+    See also: https://code.djangoproject.com/ticket/20456
+
+    """
+
     view.request = request
     view.args = args
     view.kwargs = kwargs
