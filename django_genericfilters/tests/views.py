@@ -6,6 +6,24 @@ from django.db import models
 from django_genericfilters import views
 from django_genericfilters.forms import FilteredForm
 
+from django.test import RequestFactory
+
+
+def setup_view(view, request, *args, **kwargs):
+    """Mimic as_view() returned callable, but returns view instance.
+
+    args and kwargs are the same you would pass to ``reverse()``
+
+    See also: https://code.djangoproject.com/ticket/20456
+
+    """
+
+    view.request = request
+    view.args = args
+    view.kwargs = kwargs
+
+    return view
+
 
 class ParentModel(models.Model):
     """
@@ -61,6 +79,111 @@ class FilteredViewTestCase(unittest.TestCase):
         def get_order_by_choices(self):
             return (('last_name', 'Last Name'),
                     ('first_name', 'First Name'))
+
+    def test_default_order_fallback_form_valid(self):
+        """Queryset is unordered if no default_order or data (valid form)."""
+        data = {"city": "N"}
+        view = setup_view(
+            views.FilteredListView(
+                model=self.QueryModel, form_class=self.Form),
+            RequestFactory().get('/fake', data))
+
+        view.form.is_valid()
+        queryset = view.form_valid(view.form)
+        self.assertEqual(queryset.query.order_by, [])
+
+    def test_default_order_fallback_form_invalid(self):
+        """Queryset is unordered if no default_order or data (invalid form)."""
+        data = {"city": "fake"}
+        view = setup_view(
+            views.FilteredListView(
+                model=self.QueryModel, form_class=self.Form),
+            RequestFactory().get('/fake', data))
+
+        view.form.is_valid()
+        queryset = view.form_invalid(view.form)
+        self.assertEqual(queryset.query.order_by, [])
+
+    def test_default_order_fallback_form_empty(self):
+        """Queryset is unordered if no default_order or data (empty form)."""
+        request = RequestFactory().get('/fake')
+        view = setup_view(
+            views.FilteredListView(
+                model=self.QueryModel, form_class=self.Form),
+            request)
+
+        queryset = view.form_empty()
+        self.assertEqual(queryset.query.order_by, [])
+
+    def test_default_order_form_valid(self):
+        """Queryset is ordered by default_order when no order_by in request."""
+        data = {"city": "N"}
+        view = setup_view(
+            views.FilteredListView(
+                model=self.QueryModel,
+                form_class=self.Form,
+                default_order='last_name'),
+            RequestFactory().get('/fake', data))
+
+        view.form.is_valid()
+        queryset = view.form_valid(view.form)
+        self.assertEqual(queryset.query.order_by, ['last_name'])
+
+    def test_default_order_form_invalid(self):
+        """Queryset is ordered by default_order when no order_by in request
+        and form is invalid."""
+        data = {"city": "fake"}
+        view = setup_view(
+            views.FilteredListView(
+                model=self.QueryModel,
+                form_class=self.Form,
+                default_order='last_name'),
+            RequestFactory().get('/fake', data))
+
+        view.form.is_valid()
+        queryset = view.form_invalid(view.form)
+        self.assertEqual(queryset.query.order_by, ['last_name'])
+
+    def test_default_order_form_empty(self):
+        """Queryset is ordered by default_order when no order_by in request."""
+        request = RequestFactory().get('/fake')
+        view = setup_view(
+            views.FilteredListView(
+                model=self.QueryModel,
+                form_class=self.Form,
+                default_order='last_name'),
+            request)
+
+        queryset = view.form_empty()
+        self.assertEqual(queryset.query.order_by, ['last_name'])
+
+    def test_default_order_reverse(self):
+        """To test order reverse"""
+        data = {"city": "N"}
+        view = setup_view(
+            views.FilteredListView(
+                model=self.QueryModel,
+                form_class=self.Form,
+                default_order='-last_name'),
+            RequestFactory().get('/fake', data))
+
+        view.form.is_valid()
+        queryset = view.form_valid(view.form)
+        self.assertEqual(queryset.query.order_by, ['-last_name'])
+
+    def test_default_order_in_request(self):
+        """Test with order_by in data."""
+        data = {"city": "N", "order_by": "last_name"}
+        view = setup_view(
+            views.FilteredListView(
+                model=self.QueryModel,
+                form_class=self.Form,
+                default_order='-last_name'),
+            RequestFactory().get('/fake', data))
+
+        view.form.is_valid()
+        queryset = view.form_valid(view.form)
+        self.assertEqual(queryset.query.order_by, ['last_name'])
 
     def test_filtered_list_view(self):
         a = views.FilteredListView(filter_fields=['city'],

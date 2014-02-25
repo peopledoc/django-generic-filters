@@ -45,7 +45,6 @@ This form handle filter on a raw query and priority.
         model = Ticket
         paginate_by = 10
         form_class = TicketListForm
-        order_by_list = ['-last_updated_at']
         search_fields = ['creator__last_name', 'creator__first_name',
                      'subject', 'body']
         filter_fields = ['status', 'priority']
@@ -61,11 +60,6 @@ FilteredListView Options
 ************************
 
 TicketListView define a set of useful specific options:
-
-order_by_list
--------------
-
-a list of fields to be used as ordering in the template
 
 search_fields
 -------------
