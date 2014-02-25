@@ -16,7 +16,6 @@ class UserListView(FilteredListView):
 
     # FilteredListView options
     form_class = UserListForm
-    order_by_list = ['date_joined', 'last_login', 'last_name']
     search_fields = ['first_name', 'last_name', 'username', 'email']
     filter_fields = ['is_active', 'is_staff', 'is_superuser']
     default_order = 'last_name'
