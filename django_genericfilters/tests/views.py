@@ -130,7 +130,8 @@ class FilteredViewTestCase(unittest.TestCase):
         self.assertEqual(queryset.query.order_by, ['last_name'])
 
     def test_default_order_form_invalid(self):
-        """Queryset is ordered by default_order when no order_by in request."""
+        """Queryset is ordered by default_order when no order_by in request
+        and form is invalid."""
         data = {"city": "fake"}
         view = setup_view(
             views.FilteredListView(
@@ -157,6 +158,7 @@ class FilteredViewTestCase(unittest.TestCase):
         self.assertEqual(queryset.query.order_by, ['last_name'])
 
     def test_default_order_reverse(self):
+        """To test order reverse"""
         data = {"city": "N"}
         view = setup_view(
             views.FilteredListView(
@@ -170,6 +172,7 @@ class FilteredViewTestCase(unittest.TestCase):
         self.assertEqual(queryset.query.order_by, ['-last_name'])
 
     def test_default_order_in_request(self):
+        """Test with order_by in data."""
         data = {"city": "N", "order_by": "last_name"}
         view = setup_view(
             views.FilteredListView(
