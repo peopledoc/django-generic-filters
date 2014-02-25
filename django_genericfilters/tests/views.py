@@ -156,6 +156,32 @@ class FilteredViewTestCase(unittest.TestCase):
         queryset = view.form_empty()
         self.assertEqual(queryset.query.order_by, ['last_name'])
 
+    def test_default_order_reverse(self):
+        data = {"city": "N"}
+        view = setup_view(
+            views.FilteredListView(
+                model=self.QueryModel,
+                form_class=self.Form,
+                default_order='-last_name'),
+            RequestFactory().get('/fake', data))
+
+        view.form.is_valid()
+        queryset = view.form_valid(view.form)
+        self.assertEqual(queryset.query.order_by, ['-last_name'])
+
+    def test_default_order_in_request(self):
+        data = {"city": "N", "order_by": "last_name"}
+        view = setup_view(
+            views.FilteredListView(
+                model=self.QueryModel,
+                form_class=self.Form,
+                default_order='-last_name'),
+            RequestFactory().get('/fake', data))
+
+        view.form.is_valid()
+        queryset = view.form_valid(view.form)
+        self.assertEqual(queryset.query.order_by, ['last_name'])
+
     def test_filtered_list_view(self):
         a = views.FilteredListView(filter_fields=['city'],
                                    form_class=self.Form,
