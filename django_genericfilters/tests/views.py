@@ -219,3 +219,19 @@ class FilteredViewTestCase(unittest.TestCase):
             'WHERE "tests_parentmodel"."name" = S ',
             b.form_valid(b.form).query.__str__()
         )
+
+    def test_is_form_submitted_method(self):
+        """Is form submitted return True when the request method is GET."""
+        request = RequestFactory().get('/fake', {"foo": "bar"})
+        view = setup_view(views.FilteredListView(), request)
+        assert view.is_form_submitted() is True
+
+        request = RequestFactory().post('/fake', {"foo": "bar"})
+        view = setup_view(views.FilteredListView(), request)
+        assert view.is_form_submitted() is False
+
+    def test_is_form_submitted_no_args(self):
+        """Is form submitted return False when the queryset is empty."""
+        request = RequestFactory().get('/fake')
+        view = setup_view(views.FilteredListView(), request)
+        assert view.is_form_submitted() is False

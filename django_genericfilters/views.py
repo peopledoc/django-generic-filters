@@ -23,7 +23,7 @@ class FilteredListView(FormMixin, ListView):
         """
         Return True if the form is already submited. False otherwise
         """
-        return self.request.method == 'GET'
+        return bool(self.request.method == 'GET' and self.request.GET)
 
     def get_initial(self):
         """
