@@ -116,7 +116,7 @@ class FilteredViewTestCase(unittest.TestCase):
         )
 
     def test_is_form_submitted_method(self):
-        """Is form submitted return True if request method is a GET."""
+        """Is form submitted return True when the request method is GET."""
         request = RequestFactory().get('/fake', {"foo": "bar"})
         view = setup_view(views.FilteredListView(), request)
         assert view.is_form_submitted() is True
@@ -126,7 +126,7 @@ class FilteredViewTestCase(unittest.TestCase):
         assert view.is_form_submitted() is False
 
     def test_is_form_submitted_no_args(self):
-        """Is form submitted return False if querystring is empty."""
+        """Is form submitted return False when the queryset is empty."""
         request = RequestFactory().get('/fake')
         view = setup_view(views.FilteredListView(), request)
         assert view.is_form_submitted() is False
