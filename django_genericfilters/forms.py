@@ -20,30 +20,6 @@ class QueryFormMixin(object):
                                                widget=forms.HiddenInput)
 
 
-class PaginationFormMixin(object):
-    """
-    Mixin paginating filtered results.
-    """
-    def __init__(self, *args, **kwargs):
-        super(PaginationFormMixin, self).__init__(*args, **kwargs)
-
-        self.fields['page'] = forms.IntegerField(
-            label=_('page'),
-            required=False,
-            min_value=1,
-            initial=1,
-            widget=forms.HiddenInput
-            )
-
-        self.fields['paginate_by'] = forms.IntegerField(
-            label=_('paginate by'),
-            required=False,
-            initial=10,
-            min_value=2,
-            max_value=20,
-            widget=forms.HiddenInput)
-
-
 class OrderFormMixin(object):
     """
     Mixin implementing order_by and order_by_reverse for your filtered
@@ -90,8 +66,7 @@ class OrderFormMixin(object):
             _("Don't forget to implements get_order_by_choices"))
 
 
-class FilteredForm(OrderFormMixin, PaginationFormMixin,
-                   QueryFormMixin, forms.Form):
+class FilteredForm(OrderFormMixin, QueryFormMixin, forms.Form):
     """
     FilteredForm is like a classic forms. But It use OrderFormMixin,
     PaginationFormMixin and QueryFormMixin
