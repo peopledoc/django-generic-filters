@@ -33,15 +33,6 @@ class FormTestCase(unittest.TestCase):
         self.assertEqual(form.fields['order_by'].choices,
                          list(get_order_by_choices()))
 
-    def test_pagination_form_mixin(self):
-        class Form(gf.PaginationFormMixin, forms.Form):
-            pass
-
-        form = Form()
-
-        self.assertTrue('page' in form.fields)
-        self.assertTrue('paginate_by' in form.fields)
-
     def test_get_order_by_choices_not_implemented(self):
         class Form(gf.OrderFormMixin):
             pass
@@ -75,12 +66,6 @@ class FilteredFormTestCase(unittest.TestCase):
         form = self.Form()
 
         self.assertEqual(str(type(form.fields['query'].widget)),
-                         "<class 'django.forms.widgets.HiddenInput'>")
-
-        self.assertEqual(str(type(form.fields['page'].widget)),
-                         "<class 'django.forms.widgets.HiddenInput'>")
-
-        self.assertEqual(str(type(form.fields['paginate_by'].widget)),
                          "<class 'django.forms.widgets.HiddenInput'>")
 
         self.assertEqual(str(type(form.fields['order_by'].widget)),

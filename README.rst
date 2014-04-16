@@ -72,8 +72,7 @@ Example
     from django_genericfilters import forms as gf
 
 
-    class UserListForm(gf.QueryFormMixin, gf.PaginationFormMixin,
-                       gf.OrderFormMixin, gf.FilteredForm):
+    class UserListForm(gf.QueryFormMixin, gf.OrderFormMixin, gf.FilteredForm):
         is_active = gf.ChoiceField(label=_('Status'),
                                    choices=(('yes', _('Active')),
                                             ('no', _('Unactive'))))
@@ -96,7 +95,6 @@ Forms
 Several form mixin are provided to cover frequent use cases:
 
 * ``OrderFormMixin`` with order_by and order_reverse fields.
-* ``PaginationFormMixin`` with page and paginate_by.
 * ``QueryFormMixin`` for little full-text search using icontains.
 
 See "mixin" documentation for details.

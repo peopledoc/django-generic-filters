@@ -14,9 +14,6 @@ def is_filter(value, form):
 
 class FilteredListView(FormMixin, ListView):
     """A Generic ListView used to filter and order objects."""
-    initial = {'page': 1, 'paginate_by': 10}
-    #: Default ordering for queryset.
-    #: If None (default) fallback to model's default ordering.
     default_order = None
 
     def is_form_submitted(self):
@@ -83,10 +80,6 @@ class FilteredListView(FormMixin, ListView):
         """
         # Get default queryset from ListView parameters (queryset, model, ...)
         queryset = self.__get_queryset()
-
-        # Handle PaginateFormMixin
-        if is_filter('paginate_by', form):
-            self.paginate_by = form.cleaned_data['paginate_by']
 
         # Handle QueryFormMixin
         if is_filter('query', form):
@@ -164,8 +157,6 @@ class FilteredListView(FormMixin, ListView):
         Add a filter pagination, a list of filters and self.form to
         the context to be rendered by the view.
         """
-        kwargs.setdefault('page', 1)
-
         kwargs = ListView.get_context_data(self, **kwargs)
         kwargs['form'] = self.form
         kwargs['filters'] = self.get_filters()
