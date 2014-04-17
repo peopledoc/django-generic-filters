@@ -2,10 +2,10 @@ Changelog
 =========
 
 
-0.8 (unreleased)
+0.8 (2014-04-17)
 ----------------
 
-- Nothing changed yet.
+- Remove support of the pagination.
 
 
 0.7 (2014-02-25)
