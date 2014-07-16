@@ -154,8 +154,8 @@ class FilteredListView(FormMixin, ListView):
 
     def get_context_data(self, **kwargs):
         """
-        Add a filter pagination, a list of filters and self.form to
-        the context to be rendered by the view.
+        Add a list of filters and self.form to the context to be rendered by
+        the view.
         """
         kwargs = ListView.get_context_data(self, **kwargs)
         kwargs['form'] = self.form
