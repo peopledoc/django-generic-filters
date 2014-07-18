@@ -2,11 +2,11 @@ Changelog
 =========
 
 
-0.9 (unreleased)
+0.9 (2014-07-18)
 ----------------
 
-- Nothing changed yet.
-
+- Fix filter list pagination
+- Fix travis-ci test suite
 
 0.8 (2014-04-17)
 ----------------
