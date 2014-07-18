@@ -3,6 +3,6 @@ python:
     - "2.6"
     - "2.7"
 install:
-    - python setup.py develop
-    - cd demo; python setup.py develop; cd ..
+    - pip install -e ./
+    - "cd demo; pip install -e ./; cd .."
 script: demo test
