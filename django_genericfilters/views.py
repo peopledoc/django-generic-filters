@@ -100,10 +100,10 @@ class FilteredListView(FormMixin, ListView):
             if field:
                 filters[k] = field
 
-            # Get extra condition for a field to on the filters
-            filter_fields_condtion = self.qs_filter_fields_conditions[k]
-            for key, value in filter_fields_condtion.iteritems():
-                filters[key] = value
+                # Get extra condition for a field to on the filters
+                filter_fields_condtion = self.qs_filter_fields_conditions[k]
+                for key, value in filter_fields_condtion.iteritems():
+                    filters[key] = value
 
         queryset = queryset.filter(**filters)
 
