@@ -1,18 +1,23 @@
-####################
-django-generic-views
-####################
+######################
+django-generic-filters
+######################
 
-django-generic-filters provides generic views to easily add filters to your ListView.
+`django-generic-filters` is a toolkit to filter results of Django's
+``ListView``, using forms.
 
-It can handle RawQueryset, Python Object List as well as normal queryset.
+Main use cases are obviously search forms and filtered lists.
 
-It uses a form to define which filters you want and add some options to
-your list view.
+As a developer, given you have a ``ListView``, in order to let the user
+filter the results:
+
+* use a form to easily render the filters as HTML;
+* the user typically sends the filters via GET;
+* validate the user's input using a Django form;
+* filter the Django view's queryset using form's cleaned data.
 
 .. image:: https://secure.travis-ci.org/novapost/django-generic-filters.png?branch=master
    :alt: Build Status
    :target: https://secure.travis-ci.org/novapost/django-generic-filters
-
 
 
 *******
@@ -27,13 +32,16 @@ Example
 
 
     class UserListView(FilteredListView):
-        # Normal ListView options
+        # ListView options. FilteredListView inherits from ListView.
+        model = User
         template_name = 'user/user_list.html'
         paginate_by = 10
         context_object_name = 'users'
 
-        # FilteredListView options
+        # FormMixin options. FilteredListView inherits from FormMixin.
         form_class = UserListForm
+
+        # FilteredListView options.
         search_fields = ['first_name', 'last_name', 'username', 'email']
         filter_fields = ['is_active', 'is_staff', 'is_superuser']
         default_order = 'last_name'
@@ -43,7 +51,7 @@ Example
             queryset = super(UserListView, self).form_valid(form)
 
             # Handle specific fields of the custom ListForm
-            # Others are automatically handled by FilteredListView
+            # Others are automatically handled by FilteredListView.
 
             if form.cleaned_data['is_active'] == 'yes':
                 queryset = queryset.filter(is_active=True)
@@ -79,7 +87,7 @@ Example
 
         is_staff = gf.ChoiceField(label=_('Staff'))
 
-        is_superuser = gf.ChoiceField(label=_('Superuser')))
+        is_superuser = gf.ChoiceField(label=_('Superuser'))
 
         def get_order_by_choices(self):
             return [('date_joined', _(u'date joined')),
@@ -87,12 +95,11 @@ Example
                     ('last_name', _(u'Name'))]
 
 
-
 *****
 Forms
 *****
 
-Several form mixin are provided to cover frequent use cases:
+Several form mixins are provided to cover frequent use cases:
 
 * ``OrderFormMixin`` with order_by and order_reverse fields.
 * ``QueryFormMixin`` for little full-text search using icontains.
