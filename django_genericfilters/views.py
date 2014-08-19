@@ -103,12 +103,12 @@ class FilteredListView(FormMixin, ListView):
                 # Get extra condition for a field to on the filters
                 if hasattr(self, 'qs_filter_fields_conditions'):
                     try:
-                        filter_fields_condtion = self.\
+                        filter_fields_conditions = self.\
                             qs_filter_fields_conditions[k]
                     except KeyError:
-                        filter_fields_condtion = {}
+                        filter_fields_conditions = {}
 
-                    for key, value in filter_fields_condtion.iteritems():
+                    for key, value in filter_fields_conditions.iteritems():
                         filters[key] = value
 
         queryset = queryset.filter(**filters)
