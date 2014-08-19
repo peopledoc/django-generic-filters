@@ -81,6 +81,12 @@ qs_filter_fields
 a dict used to filter the results queryset. Useful if you need to make
 complex filters or related models filters.
 
+qs_filter_fields_conditions
+---------------------------
+
+A dict used to filter the results queryset. Useful to add extra condition for
+a special field from qs_filter_fields.
+
 default_order
 -------------
 
