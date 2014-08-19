@@ -99,6 +99,12 @@ class FilteredListView(FormMixin, ListView):
             field = form.cleaned_data.get(v)
             if field:
                 filters[k] = field
+
+            # Get extra condition for a field to on the filters
+            filter_fields_condtion = self.qs_filter_fields_conditions[k]
+            for key, value in filter_fields_condtion.iteritems():
+                filters[key] = value
+
         queryset = queryset.filter(**filters)
 
         # Handle OrderFormMixin
