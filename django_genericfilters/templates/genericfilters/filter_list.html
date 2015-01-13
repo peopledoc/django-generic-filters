@@ -1,4 +1,6 @@
-{% load i18n updateurl %}
+{% load staticfiles %}
+<link rel="stylesheet" href="{% static 'css/filters_list.css' %}" />
+{% load i18n updateurl utils %}
 <form method="GET" id="search_form" style="display: block;">
   <ul class="nav nav-list">
     {# Hidden fields #}
@@ -6,8 +8,12 @@
 
     {# Visible fields #}
     {% for field in form.visible_fields %}
-      <li class="nav-header">{{ field.label }}</li>
-      <li class="field">{{ field }}</li>
+      {% if field|is_checkbox %}
+        <label class="aligned_label" for="{{ field.auto_id }}">{{ field }}{{ field.label }}</label>
+      {% else %}
+        <li class="nav-header">{{ field.label }}</li>
+        <li class="field">{{ field }}</li>
+      {% endif %}
     {% endfor %}
 
     {# FilterList #}
