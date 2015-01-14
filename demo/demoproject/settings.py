@@ -77,7 +77,6 @@ TEMPLATE_DEBUG = DEBUG
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--verbose',
              '--nocapture',
-             '--rednose',
              '--with-id',  # allows --failed which only reruns failed tests
              '--id-file=%s' % join(data_dir, 'noseids'),
              '--with-doctest',
