@@ -6,9 +6,9 @@ Example:
 
 .. code-block:: Django
 
-{% load utils %}
+    {% load utils %}
 
-{{ form.field.__class__.__name__ }}
+    {% if form.field|is_checkbox %}
 
 """
 
@@ -18,5 +18,4 @@ register = template.Library()
 
 @register.filter
 def is_checkbox(form_field):
-    # import ipdb; ipdb.set_trace()
     return form_field.field.widget.__class__.__name__ == 'CheckboxInput'
