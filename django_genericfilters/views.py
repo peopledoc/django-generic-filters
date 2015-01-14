@@ -27,6 +27,7 @@ class FilteredListView(FormMixin, ListView):
         add "order_by" and "order_reverse" to the initials.
         """
         kwargs = super(FilteredListView, self).get_initial()
+
         if self.default_order:
             order_by = self.default_order
 

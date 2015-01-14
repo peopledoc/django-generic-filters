@@ -2,8 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_genericfilters import forms as gf
 
 
-class UserListForm(gf.QueryFormMixin, gf.PaginationFormMixin,
-                   gf.OrderFormMixin, gf.FilteredForm):
+class UserListForm(gf.FilteredForm):
     is_active = gf.ChoiceField(label=_('Status'),
                                choices=(('yes', _('Active')),
                                         ('no', _('Unactive'))))

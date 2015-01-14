@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     # For test purposes. The demo project is part of
     # django-generic-filters test suite.
     'django_nose',
+    'templateaddons'
 )
 
 
