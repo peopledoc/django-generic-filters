@@ -1,7 +1,10 @@
 import unittest
 import sys
+import urllib
+
 from django import forms
 from django.db import models
+from django.http import QueryDict
 
 from django_genericfilters import views
 from django_genericfilters.forms import FilteredForm
@@ -114,6 +117,18 @@ class FilteredViewTestCase(unittest.TestCase):
 
         queryset = view.form_empty()
         self.assertEqual(queryset.query.order_by, [])
+
+    def test_default_filter(self):
+        """Test the default filter"""
+        request = RequestFactory().get('/fake')
+        view = setup_view(
+            views.FilteredListView(
+                model=self.QueryModel, form_class=self.Form,
+                default_filter={'is_active': '1', 'page': '1'}),
+            request)
+
+        query_filter = urllib.urlencode({'is_active': '1', 'page': '1'})
+        self.assertEqual(view.kwargs['data'], QueryDict(query_filter))
 
     def test_default_order_form_valid(self):
         """Queryset is ordered by default_order when no order_by in request."""

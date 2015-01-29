@@ -92,6 +92,13 @@ default_order
 
 the order you want your results to be sorted by default.
 
+
+default_filter
+--------------
+
+The active filter by default.
+
+
 FilteredListView Method
 ***********************
 
