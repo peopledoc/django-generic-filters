@@ -128,7 +128,8 @@ class FilteredViewTestCase(unittest.TestCase):
             request)
 
         query_filter = urllib.urlencode({'is_active': '1', 'page': '1'})
-        self.assertEqual(view.kwargs['data'], QueryDict(query_filter))
+        get_filter = view.get_form_kwargs()
+        self.assertEqual(get_filter['data'], QueryDict(query_filter))
 
     def test_default_order_form_valid(self):
         """Queryset is ordered by default_order when no order_by in request."""
