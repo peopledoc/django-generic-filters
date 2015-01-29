@@ -2,10 +2,10 @@ Changelog
 =========
 
 
-1.0 (unreleased)
+1.0 (2015-01-29)
 ----------------
 
-- Nothing changed yet.
+- Add support of a default filter.
 
 
 0.12 (2015-01-14)
