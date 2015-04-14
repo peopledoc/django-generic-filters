@@ -42,9 +42,8 @@ class FilteredListView(FormMixin, ListView):
         kwargs = {'initial': self.get_initial()}
         data = self.request.GET.copy()
 
-        for key, value in self.default_filter.iteritems():
-            if key not in data:
-                data[key] = value
+        if self.default_filter:
+            data.update(self.default_filter)
         kwargs.update({'data': data})
 
         return kwargs
