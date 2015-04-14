@@ -51,7 +51,9 @@ class FilteredListView(FormMixin, ListView):
 
         if self.is_form_submitted():
             data.update(self.request.GET)
-        kwargs.update({'data': data})
+
+        if data:
+            kwargs.update({'data': data})
 
         return kwargs
 
