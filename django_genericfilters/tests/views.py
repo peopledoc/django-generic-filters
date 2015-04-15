@@ -40,7 +40,7 @@ class FilteredViewTestCase(unittest.TestCase):
     def assertIn(self, a, b, msg=None):
         if sys.version_info[:2] == (2, 6):
             # for 2.6 compatibility
-            if not a in b:
+            if a not in b:
                 self.fail("%s is not in %b" % (repr(a), repr(b)))
         else:
             super(FilteredViewTestCase, self).assertIn(a, b, msg=msg)
