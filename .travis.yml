@@ -1,4 +1,6 @@
 language: python
+install:
+    pip install tox
 env:
     matrix:
         - TOXENV=py27
