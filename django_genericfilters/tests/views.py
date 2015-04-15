@@ -131,6 +131,21 @@ class FilteredViewTestCase(unittest.TestCase):
         get_filter = view.get_form_kwargs()
         self.assertEqual(get_filter['data'], QueryDict(query_filter))
 
+        def test_default_filter_submit(self):
+            """Test the default filter submit"""
+            data = {"city": "N"}
+            request = RequestFactory().get('/fake', data)
+            view = setup_view(
+                views.FilteredListView(
+                    model=self.QueryModel, form_class=self.Form,
+                    default_filter={'is_active': '1', 'page': '1'}),
+                request)
+
+            query_filter = urllib.urlencode({
+                'is_active': '1', 'page': '1', 'city': 'N'})
+            get_filter = view.get_form_kwargs()
+            self.assertEqual(get_filter['data'], QueryDict(query_filter))
+
     def test_default_order_form_valid(self):
         """Queryset is ordered by default_order when no order_by in request."""
         data = {"city": "N"}

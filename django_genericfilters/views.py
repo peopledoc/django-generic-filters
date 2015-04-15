@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import urllib
-
 from django import forms
 from django.http import QueryDict
 from django.db.models import Q
@@ -43,13 +41,15 @@ class FilteredListView(FormMixin, ListView):
     def get_form_kwargs(self):
         """Read GET data to return keyword arguments for the form."""
         kwargs = {'initial': self.get_initial()}
+        data = QueryDict({}).copy()
+
+        if self.default_filter:
+            data.update(self.default_filter)
 
         if self.is_form_submitted():
-            kwargs.update({'data': self.request.GET})
-        else:
-            if self.default_filter:
-                query_filter = urllib.urlencode(self.default_filter)
-                kwargs.update({'data': QueryDict(query_filter)})
+            data.update(self.request.GET)
+
+        kwargs.update({'data': data})
 
         return kwargs
 
