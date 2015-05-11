@@ -2,10 +2,10 @@ Changelog
 =========
 
 
-1.2 (unreleased)
+1.2 (2015-05-11)
 ----------------
 
-- Nothing changed yet.
+- Handle all filter when using default filter.
 
 
 1.1 (2015-04-16)
