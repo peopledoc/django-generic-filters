@@ -97,6 +97,8 @@ default_filter
 --------------
 
 The active filter by default.
+When using that default filter you need to set ('-1', 'ALL') in your choices
+filters for boolean.
 
 
 FilteredListView Method
