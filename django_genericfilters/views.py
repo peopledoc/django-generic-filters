@@ -108,7 +108,7 @@ class FilteredListView(FormMixin, ListView):
         filters = {}
         for k, v in self.get_qs_filters().iteritems():
             field = form.cleaned_data.get(v)
-            if field:
+            if field and field != '-1':
                 filters[k] = field
 
                 # Get extra condition for a field to on the filters
@@ -219,7 +219,8 @@ class FilteredListView(FormMixin, ListView):
                     new_filter.choices.append(new_choice)
 
                 if not self.form.fields[field].required and \
-                        not [c for c in new_filter.choices if c.value == '']:
+                        not [c for c in new_filter.choices
+                             if c.value == '-1' or c.value == '']:
                     all_choice = Bunch(value='', label=_('All'),
                                        is_selected=(not selected))
                     new_filter.choices.insert(0, all_choice)
