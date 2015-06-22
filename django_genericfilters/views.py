@@ -132,9 +132,6 @@ class FilteredListView(FormMixin, ListView):
         if is_filter('order_reverse', form):
             queryset = queryset.reverse()
 
-        # Handle distinct for Join in some Querysets
-        queryset = queryset.distinct()
-
         return queryset
 
     def form_invalid(self, form):
