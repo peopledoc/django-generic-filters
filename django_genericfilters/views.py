@@ -106,7 +106,7 @@ class FilteredListView(FormMixin, ListView):
 
         # Handle get_qs_filters
         filters = {}
-        for k, v in self.get_qs_filters().iteritems():
+        for k, v in self.get_qs_filters().items():
             field = form.cleaned_data.get(v)
             if field and field != '-1':
                 filters[k] = field
@@ -177,7 +177,7 @@ class FilteredListView(FormMixin, ListView):
         Add a list of filters and self.form to the context to be rendered by
         the view.
         """
-        kwargs = ListView.get_context_data(self, **kwargs)
+        kwargs = super(FilteredListView, self).get_context_data(**kwargs)
         kwargs['form'] = self.form
         kwargs['filters'] = self.get_filters()
 

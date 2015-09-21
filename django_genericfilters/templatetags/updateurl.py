@@ -16,12 +16,17 @@ Example:
 
 """
 import re
-import urllib
-import urlparse
+from builtins import str
 
 from django import template
 from django.template.base import FilterExpression
 from django.utils.html import conditional_escape
+
+try:
+    from urllib.parse import urlparse, urlencode, urlunparse, parse_qs
+except ImportError:
+    from urlparse import urlparse, urlunparse, parse_qs
+    from urllib import urlencode
 
 
 register = template.Library()
@@ -113,12 +118,12 @@ def update_query_string(url, updates):
     '/foo/?bar=created'
 
     """
-    url_parts = list(urlparse.urlparse(str(url)))
-    query_dict = urlparse.parse_qs(url_parts[4])
+    url_parts = list(urlparse(str(url)))
+    query_dict = parse_qs(url_parts[4])
     query_dict.update(updates)
-    query_string = urllib.urlencode(query_dict, True)
+    query_string = urlencode(query_dict, True)
     url_parts[4] = query_string
-    return urlparse.urlunparse(url_parts)
+    return urlunparse(url_parts)
 
 
 class UpdateQueryStringNode(template.Node):
@@ -135,17 +140,17 @@ class UpdateQueryStringNode(template.Node):
         try:
             url = url.resolve(context)
         except AttributeError:
-            url = unicode(url)
+            url = str(url)
         updates = {}
-        for key, value in self.qs_updates.iteritems():
+        for key, value in self.qs_updates.items():
             try:
                 key = key.resolve(context)
             except AttributeError:
-                key = unicode(key)
+                key = str(key)
             try:
                 value = value.resolve(context)
             except AttributeError:
-                value = unicode(value)
+                value = str(value)
             updates[key] = value
         new_url = update_query_string(url, updates)
         try:
