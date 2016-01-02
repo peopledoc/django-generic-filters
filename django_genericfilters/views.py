@@ -17,6 +17,7 @@ class FilteredListView(FormMixin, ListView):
     """A Generic ListView used to filter and order objects."""
     default_order = None
     default_filter = None
+    use_search_filter = False
 
     def is_form_submitted(self):
         """
@@ -98,9 +99,12 @@ class FilteredListView(FormMixin, ListView):
             query_words = query.split()
             filters = None
             for f in self.search_fields:
-                for word in query_words:
-                    q = Q(**{f + '__icontains': word})
-                    filters = filters | q if filters else q
+                if self.use_search_filter:
+                    filters = Q(**{f + '__search': query_words})
+                else:
+                    for word in query_words:
+                        q = Q(**{f + '__icontains': word})
+                        filters = filters | q if filters else q
             if filters:
                 queryset = queryset.filter(filters)
 
