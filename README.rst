@@ -116,3 +116,9 @@ Ressources
 * Code repository: https://github.com/novapost/django-generic-filters
 * Bugtracker: https://github.com/novapost/django-generic-filters/issues
 * Continuous integration: https://travis-ci.org/novapost/django-generic-filters
+
+**********
+Alternatives
+**********
+If the project does not meet your requirements - change it by pull requests or use an alternate `django-filter
+<https://github.com/alex/django-filter>`_.
