@@ -111,7 +111,7 @@ See "mixin" documentation for details.
 Ressources
 **********
 
-* Documentation: http://django-generic-filters.readthedocs.org
+* Documentation: https://django-generic-filters.readthedocs.io
 * PyPI page: http://pypi.python.org/pypi/django-generic-filters
 * Code repository: https://github.com/novapost/django-generic-filters
 * Bugtracker: https://github.com/novapost/django-generic-filters/issues

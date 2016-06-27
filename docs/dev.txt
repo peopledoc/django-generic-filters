@@ -116,4 +116,4 @@ References
 .. _`Python`: http://python.org
 .. _`Virtualenv`: http://virtualenv.org
 .. _`style guide for Sphinx-based documentations`:
-   http://documentation-style-guide-sphinx.readthedocs.org/
+   https://documentation-style-guide-sphinx.readthedocs.io/
