@@ -15,7 +15,6 @@ README = read_relative_file('README.rst')
 VERSION = read_relative_file('VERSION')
 PACKAGES = ['django_genericfilters']
 REQUIRES = [
-    'setuptools',
     'Django',
     'bunch',
     'django-templateaddons',
@@ -41,4 +40,5 @@ if __name__ == '__main__':  # Don't run setup() when we import this module.
           packages=PACKAGES,
           include_package_data=True,
           install_requires=REQUIRES,
+          setup_requires=['setuptools'],
           )
