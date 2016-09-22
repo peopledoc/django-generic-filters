@@ -15,7 +15,7 @@ README = read_relative_file('README')
 VERSION = '0.1'
 PACKAGES = ['demoproject']
 REQUIRES = ['django-generic-filters', 'mock', 'Django<1.7'
-            'django-nose', 'coverage', 'rednose']
+            'coverage', ]
 
 
 setup(name=NAME,
