@@ -9,6 +9,8 @@
     {% for field in form.visible_fields %}
       {% if field|is_checkbox %}
         <label class="aligned_label" for="{{ field.auto_id }}">{{ field }}{{ field.label }}</label>
+      {% elif field.name in stacked_fields %}
+        <li class="field">{{ field }}</li>
       {% else %}
         <li class="nav-header">{{ field.label }}</li>
         <li class="field">{{ field }}</li>
