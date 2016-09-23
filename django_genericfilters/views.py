@@ -180,6 +180,7 @@ class FilteredListView(FormMixin, ListView):
         kwargs = ListView.get_context_data(self, **kwargs)
         kwargs['form'] = self.form
         kwargs['filters'] = self.get_filters()
+        kwargs['stacked_fields'] = getattr(self, 'stacked_fields', [])
 
         return kwargs
 
