@@ -5,8 +5,8 @@ Changelog
 1.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Filter fields having the HTML attribute "data-auto-submit" set to "no" do not
+  trigger a page reload when modified.
 
 1.5 (2016-09-23)
 ----------------
