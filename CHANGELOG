@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.6 (unreleased)
+1.6 (2016-09-29)
 ----------------
 
 - Filter fields having the HTML attribute "data-auto-submit" set to "no" do not
