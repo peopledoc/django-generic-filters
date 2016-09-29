@@ -30,6 +30,6 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#search_form select').change(search_submit);
+        $('#search_form select:not("[data-auto-submit=\'no\']")').change(search_submit);
     });
 </script>
