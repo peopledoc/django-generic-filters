@@ -38,5 +38,6 @@ def paginator(context, adjacent_pages=1):
     else:
         return {}
 
+
 register.inclusion_tag('snippets/pagination.html',
                        takes_context=True)(paginator)
