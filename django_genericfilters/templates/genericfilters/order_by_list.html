@@ -1,13 +1,15 @@
-{% load assign updateurl %}
+{% load updateurl %}
 {% for order_field in form.fields.order_by.choices %}
-{% assign name='is_selected' %}{% if form.cleaned_data.order_by == order_field.0 %}1{% else %}0{% endif %}{% endassign %}
 <li>
-  {% if is_selected == '1' %}
-    {% assign name='order_opposite' %}{% if form.order_reverse.value == '1' %}0{% else %}1{% endif %}{% endassign %}
-    <a href="{% update_query_string with 'order_by'=order_field.0 'order_reverse'=order_opposite 'page'=1 %}"
-      class="{% if is_selected == '1' %} active{% endif %}">
-      <i class="icon-chevron-{% if order_opposite == '1' %}up{% else %}down{% endif %}"></i> {{ order_field.1|capfirst }}
+  {% if form.cleaned_data.order_by == order_field.0 %}
+    {% with form.order_reverse.value as order_reverse %}
+    {% with order_reverse|add:"0"|yesno:"0,1" as order_reverse_opposite %}
+    <a href="{% update_query_string with 'order_by'=order_field.0 'order_reverse'=order_reverse_opposite 'page'=1 %}"
+       class="{% if form.cleaned_data.order_by == order_field.0 %} active{% else %}0{% endif %}">
+      <i class="icon-chevron-{% if order_reverse == '1' %}down{% else %}up{% endif %}"></i> {{ order_field.1|capfirst }}
     </a>
+    {% endwith %}
+    {% endwith %}
   {% else %}
   <a href="{% update_query_string with 'order_by'=order_field.0 'order_reverse'=0 'page'=1 %}">
     <i style="width: 14px; display: inline-block;">&nbsp;</i> {{ order_field.1|capfirst }}

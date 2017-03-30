@@ -19,6 +19,14 @@ class QueryFormMixin(object):
         self.fields['query'] = forms.CharField(required=False,
                                                widget=forms.HiddenInput)
 
+    def clean(self):
+        data = self.cleaned_data
+        yesno = {"yes": True, "no": False}
+        update = {key: yesno.get(value, value)
+                  for key, value in data.items()}
+        data.update(update)
+        return data
+
 
 class OrderFormMixin(object):
     """
