@@ -5,7 +5,7 @@ Changelog
 1.7 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Add compatibility for Python 3.4, Django 1.9, 1.10
 
 
 1.6 (2016-09-29)
