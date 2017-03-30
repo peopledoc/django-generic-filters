@@ -13,8 +13,8 @@ def read_relative_file(filename):
 NAME = 'django-genericfilters-demo'
 README = read_relative_file('README')
 VERSION = '0.1'
-PACKAGES = ['demoproject']
-REQUIRES = ['django-generic-filters', 'mock', 'Django<1.7'
+PACKAGES = ['demoproject', 'demoproject.filter']
+REQUIRES = ['django-generic-filters', 'mock', 'Django',
             'coverage', ]
 
 
@@ -24,8 +24,8 @@ setup(name=NAME,
       long_description=README,
       classifiers=['Development Status :: 1 - Planning',
                    'License :: OSI Approved :: BSD License',
-                   'Programming Language :: Python :: 2.7',
                    'Programming Language :: Python :: 2.6',
+                   'Programming Language :: Python :: 3.4',
                    'Framework :: Django',
                    ],
       keywords='class-based view, generic view, filters',

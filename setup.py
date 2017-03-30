@@ -17,7 +17,6 @@ PACKAGES = ['django_genericfilters']
 REQUIRES = [
     'Django',
     'bunch',
-    'django-templateaddons',
 ]
 
 
@@ -28,8 +27,8 @@ if __name__ == '__main__':  # Don't run setup() when we import this module.
           long_description=README,
           classifiers=['Development Status :: 4 - Beta',
                        'License :: OSI Approved :: BSD License',
-                       'Programming Language :: Python :: 2.7',
                        'Programming Language :: Python :: 2.6',
+                       'Programming Language :: Python :: 3.4',
                        'Framework :: Django',
                        ],
           keywords='class-based view, generic view, filters',

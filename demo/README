@@ -19,8 +19,8 @@ Deploy the demo
 
 System requirements:
 
-* `Python`_ version 2.6 or 2.7, available as ``python`` command.
-  
+* `Python`_ version 2.7, or 3.4 available as ``python`` command.
+
   .. note::
 
      You may use `Virtualenv`_ to make sure the active ``python`` is the right

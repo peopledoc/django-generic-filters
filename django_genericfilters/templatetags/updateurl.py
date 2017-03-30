@@ -15,9 +15,10 @@ Example:
    {% update_query_string with page=paginator.next_page %}
 
 """
+import six
+from six.moves import urllib
+
 import re
-import urllib
-import urlparse
 
 from django import template
 from django.template.base import FilterExpression
@@ -113,12 +114,12 @@ def update_query_string(url, updates):
     '/foo/?bar=created'
 
     """
-    url_parts = list(urlparse.urlparse(str(url)))
-    query_dict = urlparse.parse_qs(url_parts[4])
+    url_parts = list(urllib.parse.urlparse(str(url)))
+    query_dict = urllib.parse.parse_qs(url_parts[4])
     query_dict.update(updates)
-    query_string = urllib.urlencode(query_dict, True)
+    query_string = urllib.parse.urlencode(query_dict, True)
     url_parts[4] = query_string
-    return urlparse.urlunparse(url_parts)
+    return urllib.parse.urlunparse(url_parts)
 
 
 class UpdateQueryStringNode(template.Node):
@@ -135,17 +136,17 @@ class UpdateQueryStringNode(template.Node):
         try:
             url = url.resolve(context)
         except AttributeError:
-            url = unicode(url)
+            url = six.text_type(url)
         updates = {}
-        for key, value in self.qs_updates.iteritems():
+        for key, value in six.iteritems(self.qs_updates):
             try:
                 key = key.resolve(context)
             except AttributeError:
-                key = unicode(key)
+                key = six.text_type(key)
             try:
                 value = value.resolve(context)
             except AttributeError:
-                value = unicode(value)
+                value = six.text_type(value)
             updates[key] = value
         new_url = update_query_string(url, updates)
         try:
