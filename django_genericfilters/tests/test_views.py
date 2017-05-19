@@ -1,6 +1,7 @@
+from six.moves import urllib
+
 import unittest
 import sys
-import urllib
 
 from django import forms
 from django.db import models
@@ -127,7 +128,7 @@ class FilteredViewTestCase(unittest.TestCase):
                 default_filter={'is_active': '1', 'page': '1'}),
             request)
 
-        query_filter = urllib.urlencode({'is_active': '1', 'page': '1'})
+        query_filter = urllib.parse.urlencode({'is_active': '1', 'page': '1'})
         get_filter = view.get_form_kwargs()
         self.assertEqual(get_filter['data'], QueryDict(query_filter))
 
@@ -141,7 +142,7 @@ class FilteredViewTestCase(unittest.TestCase):
                     default_filter={'is_active': '1', 'page': '1'}),
                 request)
 
-            query_filter = urllib.urlencode({
+            query_filter = urllib.parse.urlencode({
                 'is_active': '1', 'page': '1', 'city': 'N'})
             get_filter = view.get_form_kwargs()
             self.assertEqual(get_filter['data'], QueryDict(query_filter))
