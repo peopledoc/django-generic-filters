@@ -1,4 +1,4 @@
-{% load staticfiles assign paginator i18n %}
+{% load staticfiles paginator i18n %}
 <html>
 	<head>
         <title>django-generic-filters demo</title>
@@ -34,7 +34,7 @@
                           </div>
                         </div>
                         <div class="span10">
-                          {% assign name="placeholder" %}{% trans "Username, Last name, First name, Email" %}{% endassign %}
+                          {% trans "Username, Last name, First name, Email" as placeholder %}
                           {% include 'genericfilters/query_filter.html' %}
                             </div>
                       </div>

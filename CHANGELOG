@@ -6,6 +6,7 @@ Changelog
 ----------------
 
 - Add explicit support of Django 1.8, 1.9, 1.10, 1.11
+- Remove django-templateaddons contrib
 
 
 1.6 (2016-09-29)
