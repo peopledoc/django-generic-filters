@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import six
+
 from django import forms
 from django.http import QueryDict
 from django.db.models import Q
@@ -106,7 +108,7 @@ class FilteredListView(FormMixin, ListView):
 
         # Handle get_qs_filters
         filters = {}
-        for k, v in self.get_qs_filters().iteritems():
+        for k, v in six.iteritems(self.get_qs_filters()):
             field = form.cleaned_data.get(v)
             if field and field != '-1':
                 filters[k] = field
@@ -119,7 +121,7 @@ class FilteredListView(FormMixin, ListView):
                     except KeyError:
                         filter_fields_conditions = {}
 
-                    for key, value in filter_fields_conditions.iteritems():
+                    for key, value in filter_fields_conditions.itemitems():
                         filters[key] = value
 
         queryset = queryset.filter(**filters)
