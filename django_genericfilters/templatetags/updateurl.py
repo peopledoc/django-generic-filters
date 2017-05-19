@@ -30,14 +30,6 @@ register = template.Library()
 def token_value(bits, parser):
     """Parse ``bits`` string and return string or variable (FilterExpression).
 
-    >>> from django.template.base import Parser
-    >>> parser = Parser('')
-    >>> from django_genericfilters.templatetags.updateurl import token_value
-    >>> token_value('"A"', parser)
-    'A'
-    >>> token_value('a', parser).var
-    <Variable: 'a'>
-
     """
     if bits[0] in ('"', "'"):  # Parse a string.
         if not (bits[0] == bits[-1] or len(bits) < 2):
@@ -67,22 +59,6 @@ def token_kwargs(bits, parser):
        that adds support for variables both sides of the "=" assignation
        operator.
 
-    >>> from django.template.base import Parser
-    >>> parser = Parser('')
-    >>> from django_genericfilters.templatetags.updateurl import token_kwargs
-    >>> token_kwargs([], parser)
-    {}
-    >>> bits = ['a="A"']
-    >>> token_kwargs(bits, parser)  # doctest: +ELLIPSIS
-    {<django.template.base.FilterExpression object at 0x...>: 'A'}
-    >>> bits
-    []
-    >>> bits = ['a="A"', 'invalid']
-    >>> token_kwargs(bits, parser)  # doctest: +ELLIPSIS
-    {<django.template.base.FilterExpression object at 0x...>: 'A'}
-    >>> bits
-    ['invalid']
-
     """
     if not bits:
         return {}
@@ -101,16 +77,6 @@ def token_kwargs(bits, parser):
 
 def update_query_string(url, updates):
     """Update query string in ``url`` with ``updates``.
-
-    >>> from django_genericfilters.templatetags.updateurl import (
-    ...     update_query_string)
-
-    >>> update_query_string('/foo/?bar=baz', {'bar': 'updated'})
-    '/foo/?bar=updated'
-    >>> update_query_string('/foo/?bar=baz', {'bar': 'updated'})
-    '/foo/?bar=updated'
-    >>> update_query_string('/foo/', {'bar': 'created'})
-    '/foo/?bar=created'
 
     """
     url_parts = list(urlparse.urlparse(str(url)))
@@ -160,22 +126,6 @@ class UpdateQueryStringNode(template.Node):
 @register.tag('update_query_string')
 def tag_update_query_string(parser, token):
     """Return URL with updated querystring.
-
-    >>> import mock
-    >>> request = mock.Mock()
-    >>> request.get_full_path = mock.Mock(return_value='/fake')
-    >>> from django.template.base import Parser, TOKEN_TEXT, Token
-    >>> parser = Parser('')
-    >>> from django_genericfilters.templatetags.updateurl \
-            import tag_update_query_string
-    >>> token = Token(TOKEN_TEXT, 'tag with "page"="2"')
-    >>> node = tag_update_query_string(parser, token)
-    >>> node.render({'request': request})
-    u'/fake?page=2'
-    >>> token = Token(TOKEN_TEXT, 'tag with page=num_page')
-    >>> node = tag_update_query_string(parser, token)
-    >>> node.render({'request': request, 'page': 'page', 'num_page': 2})
-    u'/fake?page=2'
 
     """
     bits = token.split_contents()
