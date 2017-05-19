@@ -240,14 +240,14 @@ class FilteredViewTestCase(unittest.TestCase):
         self.assertEqual({'city': 'city'}, a.get_qs_filters())
         a.form.is_valid()
         self.assertIn(
-            'WHERE "tests_querymodel"."city" = N',
+            'WHERE "django_genericfilters_querymodel"."city" = N',
             a.form_valid(a.form).query.__str__()
         )
 
         self.assertEqual({'people__name': 'people'}, b.get_qs_filters())
         b.form.is_valid()
         self.assertIn(
-            'WHERE "tests_parentmodel"."name" = S ',
+            'WHERE "django_genericfilters_parentmodel"."name" = S',
             b.form_valid(b.form).query.__str__()
         )
 
