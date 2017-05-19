@@ -67,9 +67,6 @@ INSTALLED_APPS = (
     'django_genericfilters',
     'demoproject',
     'demoproject.filter',
-    # For test purposes. The demo project is part of
-    # django-generic-filters test suite.
-    'templateaddons'
 )
 
 

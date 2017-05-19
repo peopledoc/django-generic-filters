@@ -17,7 +17,6 @@ PACKAGES = ['django_genericfilters']
 REQUIRES = [
     'Django>=1.8,<1.12',
     'bunch',
-    'django-templateaddons',
 ]
 
 
