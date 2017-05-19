@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-django generic filters implement a set of mixin to work with ordered,
-paginated and filtered queryset.
+django generic filters implement a set of mixin to work with ordered
+and filtered queryset.
 
 """
 from django import forms
@@ -68,7 +68,14 @@ class OrderFormMixin(object):
 
 class FilteredForm(OrderFormMixin, QueryFormMixin, forms.Form):
     """
-    FilteredForm is like a classic forms. But It use OrderFormMixin,
-    PaginationFormMixin and QueryFormMixin
+    FilteredForm is like a classic forms. But It use OrderFormMixin
+    and QueryFormMixin
     """
-    pass
+
+    def clean(self):
+        data = self.cleaned_data
+        yesno = {"yes": True, "no": False}
+        update = {key: yesno.get(value, value)
+                  for key, value in data.items()}
+        data.update(update)
+        return data
