@@ -110,7 +110,7 @@ class FilteredListView(FormMixin, ListView):
         filters = {}
         for k, v in six.iteritems(self.get_qs_filters()):
             field = form.cleaned_data.get(v)
-            if field and field != '-1':
+            if field != '' and field != '-1':
                 filters[k] = field
 
                 # Get extra condition for a field to on the filters
@@ -204,12 +204,13 @@ class FilteredListView(FormMixin, ListView):
                     new_choice = Bunch()
                     new_choice.value = choice[0]
                     new_choice.label = choice[1]
+                    yesno = {"yes": True, "no": False}
                     if hasattr(self.form, 'cleaned_data') and \
                             field in self.form.cleaned_data:
                         # Get value for ModelChoiceField or ChoiceField
                         value = getattr(self.form.cleaned_data[field], 'pk',
                                         self.form.cleaned_data[field])
-                        if value == choice[0]:
+                        if value == yesno.get(choice[0], choice[0]):
                             new_choice.is_selected = True
                             selected = True
                         else:
