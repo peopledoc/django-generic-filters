@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 
 
 class FilteredListView(TestCase):
-    fixtures = ['initial_data.json']
+    fixtures = ['test_data.json']
 
     def test_empty_get(self):
         url = reverse('user_filter_view')
