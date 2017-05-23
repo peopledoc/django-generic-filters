@@ -1,15 +1,20 @@
+TOX = tox
+
 test:
 	tox
 
-clean:
-	find . -name '*.pyc' -delete
-	find . -name '*.pyo' -delete
+clean: clean-build clean-pyc
 
-distclean: clean
-	rm -rf *.egg
-	rm -rf *.egg-info
-
-maintainer-clean: distclean
-	rm -rf build
-	rm -rf dist
+clean-build: ## remove build artifacts
+	rm -fr build/
+	rm -fr dist/
+	rm -fr *.egg-info
 	rm -rf .tox
+
+clean-pyc: ## remove Python file artifacts
+	find . -name '*.pyc' -exec rm -f {} +
+	find . -name '*.pyo' -exec rm -f {} +
+	find . -name '*~' -exec rm -f {} +
+
+release: clean  ## release - Tag and push to PyPI
+	$(TOX) -e release
