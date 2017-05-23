@@ -15,9 +15,10 @@ Example:
    {% update_query_string with page=paginator.next_page %}
 
 """
+import six
+from six.moves import urllib
+
 import re
-import urllib
-import urlparse
 
 from django import template
 from django.template.base import FilterExpression
@@ -29,14 +30,6 @@ register = template.Library()
 
 def token_value(bits, parser):
     """Parse ``bits`` string and return string or variable (FilterExpression).
-
-    >>> from django.template.base import Parser
-    >>> parser = Parser('')
-    >>> from django_genericfilters.templatetags.updateurl import token_value
-    >>> token_value('"A"', parser)
-    'A'
-    >>> token_value('a', parser).var
-    <Variable: 'a'>
 
     """
     if bits[0] in ('"', "'"):  # Parse a string.
@@ -67,22 +60,6 @@ def token_kwargs(bits, parser):
        that adds support for variables both sides of the "=" assignation
        operator.
 
-    >>> from django.template.base import Parser
-    >>> parser = Parser('')
-    >>> from django_genericfilters.templatetags.updateurl import token_kwargs
-    >>> token_kwargs([], parser)
-    {}
-    >>> bits = ['a="A"']
-    >>> token_kwargs(bits, parser)  # doctest: +ELLIPSIS
-    {<django.template.base.FilterExpression object at 0x...>: 'A'}
-    >>> bits
-    []
-    >>> bits = ['a="A"', 'invalid']
-    >>> token_kwargs(bits, parser)  # doctest: +ELLIPSIS
-    {<django.template.base.FilterExpression object at 0x...>: 'A'}
-    >>> bits
-    ['invalid']
-
     """
     if not bits:
         return {}
@@ -102,23 +79,13 @@ def token_kwargs(bits, parser):
 def update_query_string(url, updates):
     """Update query string in ``url`` with ``updates``.
 
-    >>> from django_genericfilters.templatetags.updateurl import (
-    ...     update_query_string)
-
-    >>> update_query_string('/foo/?bar=baz', {'bar': 'updated'})
-    '/foo/?bar=updated'
-    >>> update_query_string('/foo/?bar=baz', {'bar': 'updated'})
-    '/foo/?bar=updated'
-    >>> update_query_string('/foo/', {'bar': 'created'})
-    '/foo/?bar=created'
-
     """
-    url_parts = list(urlparse.urlparse(str(url)))
-    query_dict = urlparse.parse_qs(url_parts[4])
+    url_parts = list(urllib.parse.urlparse(str(url)))
+    query_dict = urllib.parse.parse_qs(url_parts[4])
     query_dict.update(updates)
-    query_string = urllib.urlencode(query_dict, True)
+    query_string = urllib.parse.urlencode(query_dict, True)
     url_parts[4] = query_string
-    return urlparse.urlunparse(url_parts)
+    return urllib.parse.urlunparse(url_parts)
 
 
 class UpdateQueryStringNode(template.Node):
@@ -135,17 +102,17 @@ class UpdateQueryStringNode(template.Node):
         try:
             url = url.resolve(context)
         except AttributeError:
-            url = unicode(url)
+            url = six.text_type(url)
         updates = {}
-        for key, value in self.qs_updates.iteritems():
+        for key, value in six.iteritems(self.qs_updates):
             try:
                 key = key.resolve(context)
             except AttributeError:
-                key = unicode(key)
+                key = six.text_type(key)
             try:
                 value = value.resolve(context)
             except AttributeError:
-                value = unicode(value)
+                value = six.text_type(value)
             updates[key] = value
         new_url = update_query_string(url, updates)
         try:
@@ -160,22 +127,6 @@ class UpdateQueryStringNode(template.Node):
 @register.tag('update_query_string')
 def tag_update_query_string(parser, token):
     """Return URL with updated querystring.
-
-    >>> import mock
-    >>> request = mock.Mock()
-    >>> request.get_full_path = mock.Mock(return_value='/fake')
-    >>> from django.template.base import Parser, TOKEN_TEXT, Token
-    >>> parser = Parser('')
-    >>> from django_genericfilters.templatetags.updateurl \
-            import tag_update_query_string
-    >>> token = Token(TOKEN_TEXT, 'tag with "page"="2"')
-    >>> node = tag_update_query_string(parser, token)
-    >>> node.render({'request': request})
-    u'/fake?page=2'
-    >>> token = Token(TOKEN_TEXT, 'tag with page=num_page')
-    >>> node = tag_update_query_string(parser, token)
-    >>> node.render({'request': request, 'page': 'page', 'num_page': 2})
-    u'/fake?page=2'
 
     """
     bits = token.split_contents()

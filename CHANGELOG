@@ -5,7 +5,9 @@ Changelog
 1.7 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Add explicit support of Django 1.8, 1.9, 1.10, 1.11
+- Remove django-templateaddons contrib
+- Add support of Python 3
 
 
 1.6 (2016-09-29)

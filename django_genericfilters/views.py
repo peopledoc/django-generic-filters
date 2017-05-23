@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import six
+
 from django import forms
 from django.http import QueryDict
 from django.db.models import Q
@@ -106,9 +108,9 @@ class FilteredListView(FormMixin, ListView):
 
         # Handle get_qs_filters
         filters = {}
-        for k, v in self.get_qs_filters().iteritems():
+        for k, v in six.iteritems(self.get_qs_filters()):
             field = form.cleaned_data.get(v)
-            if field and field != '-1':
+            if field != '' and field != '-1':
                 filters[k] = field
 
                 # Get extra condition for a field to on the filters
@@ -119,7 +121,7 @@ class FilteredListView(FormMixin, ListView):
                     except KeyError:
                         filter_fields_conditions = {}
 
-                    for key, value in filter_fields_conditions.iteritems():
+                    for key, value in six.iteritems(filter_fields_conditions):
                         filters[key] = value
 
         queryset = queryset.filter(**filters)
@@ -202,12 +204,13 @@ class FilteredListView(FormMixin, ListView):
                     new_choice = Bunch()
                     new_choice.value = choice[0]
                     new_choice.label = choice[1]
+                    yesno = {"yes": True, "no": False}
                     if hasattr(self.form, 'cleaned_data') and \
                             field in self.form.cleaned_data:
                         # Get value for ModelChoiceField or ChoiceField
                         value = getattr(self.form.cleaned_data[field], 'pk',
                                         self.form.cleaned_data[field])
-                        if value == choice[0]:
+                        if value == yesno.get(choice[0], choice[0]):
                             new_choice.is_selected = True
                             selected = True
                         else:
