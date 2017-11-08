@@ -75,7 +75,7 @@ class FilteredForm(OrderFormMixin, QueryFormMixin, forms.Form):
     def clean(self):
         data = self.cleaned_data
         yesno = {"yes": True, "no": False}
-        update = {key: yesno.get(value, value)
+        update = {key: yesno.get(value, value) if isinstance(value, basestring) else value
                   for key, value in data.items()}
         data.update(update)
         return data

@@ -1,16 +1,14 @@
-from six.moves import urllib
-
-import unittest
 import sys
 
 from django import forms
 from django.db import models
 from django.http import QueryDict
+from django.test import RequestFactory, TestCase
+from django.utils.datastructures import MultiValueDict
 
 from django_genericfilters import views
 from django_genericfilters.forms import FilteredForm
-
-from django.test import RequestFactory
+from six.moves import urllib
 
 
 def setup_view(view, request, *args, **kwargs):
@@ -36,7 +34,13 @@ class ParentModel(models.Model):
     name = models.CharField(max_length=250)
 
 
-class FilteredViewTestCase(unittest.TestCase):
+class StatusModel(models.Model):
+    """
+    define a dummy status model
+    """
+    name = models.CharField(max_length=250)
+
+class FilteredViewTestCase(TestCase):
 
     def assertIn(self, a, b, msg=None):
         if sys.version_info[:2] == (2, 6):
@@ -53,6 +57,8 @@ class FilteredViewTestCase(unittest.TestCase):
         people = models.ForeignKey(ParentModel)
         city = models.CharField(max_length=250)
         country = models.CharField(max_length=250)
+        organization = models.CharField(max_length=250)
+        status = models.CharField(max_length=250)
 
     class Form(FilteredForm):
 
@@ -78,6 +84,25 @@ class FilteredViewTestCase(unittest.TestCase):
                 ("S", "Some"),
                 ("A", "Any")
             )
+        )
+
+        organization = forms.MultipleChoiceField(
+            label='organization', required=False,
+            choices=(
+                ('A', 'A Team'),
+                ('B', 'B Team'),
+                ('C', 'C Team')
+            ))
+
+        parent = forms.ModelChoiceField(
+            queryset=ParentModel.objects.all(),
+            label='parent', required=False
+        )
+
+        status = forms.ModelMultipleChoiceField(
+            label='status',
+            required=False,
+            queryset=StatusModel.objects.all()
         )
 
         def get_order_by_choices(self):
@@ -250,6 +275,211 @@ class FilteredViewTestCase(unittest.TestCase):
         self.assertIn(
             'WHERE "django_genericfilters_parentmodel"."name" = S',
             b.form_valid(b.form).query.__str__()
+        )
+
+    def test_filtered_list_view__none(self):
+        """
+            FAIL : None value add "IS NULL" filters instead of ignore it.
+        """
+        view = views.FilteredListView(qs_filter_fields={'city': 'city', 'people__name': 'people'},
+                                      form_class=self.Form,
+                                      model=self.QueryModel)
+
+        setup_view(view, RequestFactory().get('/fake', {"city": None, "people": "S"}))
+        view.form.is_valid()
+        self.assertIn(
+            'WHERE "django_genericfilters_parentmodel"."name" = S',
+            str(view.form_valid(view.form).query)
+        )
+
+        view = views.FilteredListView(qs_filter_fields={'city': 'city', 'people__name': 'people'},
+                                      form_class=self.Form,
+                                      model=self.QueryModel)
+
+        setup_view(view, RequestFactory().get('/fake', {"city": "N", "people": None}))
+        view.form.is_valid()
+        self.assertIn(
+            'WHERE "django_genericfilters_querymodel"."city" = N',
+            str(view.form_valid(view.form).query)
+        )
+
+    def test_filtered_list_view__multiplechoice(self):
+        """
+            FAIL : filtered filed has HiddenWidget widgets that cannot handle multiple values
+        """
+        view = views.FilteredListView(filter_fields=['organization'],
+                                      form_class=self.Form,
+                                      model=self.QueryModel)
+
+        setup_view(view, RequestFactory().get('/fake', MultiValueDict({"organization": ['A']})))
+
+        self.assertTrue(view.form.is_valid(), view.form.errors)
+        self.assertIn(
+            'WHERE "django_genericfilters_querymodel"."organization" = A',
+            str(view.form_valid(view.form).query)
+        )
+
+        view = views.FilteredListView(filter_fields=['organization'],
+                                      form_class=self.Form,
+                                      model=self.QueryModel)
+
+        setup_view(view, RequestFactory().get('/fake', MultiValueDict({"organization": ['A', 'C']})))
+        self.assertTrue(view.form.is_valid())
+        self.assertIn(
+            'WHERE "django_genericfilters_querymodel"."organization" IN (A, C)',
+            str(view.form_valid(view.form).query)
+        )
+
+    def test_filtered_list_view__multiplechoice__qs_filter_field(self):
+        """
+            FAIL : When using qs_filter_field, the behaviour changes because
+                   the HiddenWidget trick only works with filter_field attribute.
+                   But it compares a list with EQUAL operator instead of IN. 
+        """
+        people = ParentModel.objects.create(name='fake')
+
+        self.QueryModel.objects.create(organization='A', people=people)
+        self.QueryModel.objects.create(organization='C', people=people)
+
+        view = views.FilteredListView(qs_filter_fields={'organization': 'organization'},
+                                      form_class=self.Form,
+                                      model=self.QueryModel)
+
+        setup_view(view, RequestFactory().get('/fake', MultiValueDict({"organization": ['A']})))
+
+        self.assertTrue(view.form.is_valid(), view.form.errors)
+        self.assertIn(
+            'WHERE "django_genericfilters_querymodel"."organization" = A',
+            str(view.form_valid(view.form).query)
+        )
+        self.assertEqual(1, view.form_valid(view.form).count())
+
+        view = views.FilteredListView(qs_filter_fields={'organization': 'organization'},
+                                      form_class=self.Form,
+                                      model=self.QueryModel)
+
+        setup_view(view, RequestFactory().get('/fake', MultiValueDict({"organization": ['A', 'C']})))
+        self.assertTrue(view.form.is_valid())
+        self.assertIn(
+            'WHERE "django_genericfilters_querymodel"."organization" IN (A, C)',
+            str(view.form_valid(view.form).query)
+        )
+        self.assertEqual(2, view.form_valid(view.form).count())
+
+    def test_filtered_list_view__modelchoice(self):
+        peopleA = ParentModel.objects.create(name='fakeA')
+
+        view = views.FilteredListView(qs_filter_fields={'city': 'city', 'people': 'parent'},
+                                      form_class=self.Form,
+                                      model=self.QueryModel)
+
+        setup_view(view, RequestFactory().get('/fake', {"city": "N", "parent": peopleA.pk}))
+        view.form.is_valid()
+        self.assertIn(
+            'WHERE ("django_genericfilters_querymodel"."city" = N AND "django_genericfilters_querymodel"."people_id" = %s)' % peopleA.pk,
+            str(view.form_valid(view.form).query)
+        )
+
+    def test_filtered_list_view__modelchoice__empty_queryset(self):
+        """
+            FAIL : Empty queryset in ModelChoiceField add "IS NULL" filters instead of ignore it.
+        """
+        view = views.FilteredListView(qs_filter_fields={'city': 'city', 'people': 'parent'},
+                                      form_class=self.Form,
+                                      model=self.QueryModel)
+
+        setup_view(view, RequestFactory().get('/fake', {"city": "N", "parent": 1}))
+        view.form.is_valid()
+        self.assertIn(
+            'WHERE "django_genericfilters_querymodel"."city" = N',
+            str(view.form_valid(view.form).query)
+        )
+
+    def test_filtered_list_view__modelchoice__none(self):
+        """
+            FAIL : Empty queryset in ModelChoiceField add "IS NULL" filters instead of ignore it.
+        """
+        view = views.FilteredListView(qs_filter_fields={'city': 'city', 'people': 'parent'},
+                                      form_class=self.Form,
+                                      model=self.QueryModel)
+
+        setup_view(view, RequestFactory().get('/fake', {"city": "N", "parent": None}))
+        view.form.is_valid()
+        self.assertIn(
+            'WHERE "django_genericfilters_querymodel"."city" = N',
+            str(view.form_valid(view.form).query)
+        )
+
+    def test_filtered_list_view__multiplemodelchoice(self):
+        stateA = StatusModel.objects.create(name='stateA')
+        stateB = StatusModel.objects.create(name='stateB')
+
+        view = views.FilteredListView(qs_filter_fields={"city": "city", 'status': 'status'},
+                                      form_class=self.Form,
+                                      model=self.QueryModel)
+
+        setup_view(view, RequestFactory().get('/fake', MultiValueDict({"status": [stateA.pk]})))
+        view.form.is_valid()
+        self.assertIn(
+            'WHERE "django_genericfilters_querymodel"."status" = '
+            '(SELECT U0."id" AS Col1 FROM "django_genericfilters_statusmodel" U0 WHERE U0."id" IN (%s))' % stateA.pk,
+            str(view.form_valid(view.form).query)
+        )
+
+        view = views.FilteredListView(qs_filter_fields={"city": "city", 'status': 'status'},
+                                      form_class=self.Form,
+                                      model=self.QueryModel)
+
+        setup_view(view, RequestFactory().get('/fake', MultiValueDict({"status": [stateA.pk, stateB.pk]})))
+        view.form.is_valid()
+        self.assertIn(
+            'WHERE "django_genericfilters_querymodel"."status" = '
+            '(SELECT U0."id" AS Col1 FROM "django_genericfilters_statusmodel" U0 WHERE U0."id" IN (%s, %s))' % (
+                stateA.pk,
+                stateB.pk
+            ),
+            str(view.form_valid(view.form).query)
+        )
+
+    def test_filtered_list_view__multiplemodelchoice__invalid_id(self):
+        """
+            FAIL : Invalid id in MultipleModelChoiceField generate a None value and add "IS NULL" filter instead of ignore it.
+        """
+        StatusModel.objects.create(name='stateA')
+        StatusModel.objects.create(name='stateB')
+
+        view = views.FilteredListView(qs_filter_fields={"city": "city", 'status': 'status'},
+                                      form_class=self.Form,
+                                      model=self.QueryModel)
+
+        setup_view(view, RequestFactory().get('/fake', MultiValueDict({"status": [1001]})))
+        view.form.is_valid()
+        self.assertNotIn(
+            'WHERE',
+            str(view.form_valid(view.form).query)
+        )
+
+    def test_filtered_list_view__multiplemodelchoice__none(self):
+        """
+            FAIL : Empty queryset in MultipleModelChoiceField is added as subrequest in filter and raises an sql error instead of ignore it.
+        """
+        people = ParentModel.objects.create(name='fake')
+
+        statusA = StatusModel.objects.create(name='stateA')
+        statusB = StatusModel.objects.create(name='stateB')
+
+        self.QueryModel.objects.create(organization='A', people=people, status=statusA)
+        self.QueryModel.objects.create(organization='C', people=people, status=statusB)
+
+        view = views.FilteredListView(qs_filter_fields={"city": "city", 'status': 'status'},
+                                      form_class=self.Form,
+                                      model=self.QueryModel)
+
+        setup_view(view, RequestFactory().get('/fake', {}))
+        view.form.is_valid()
+        self.assertNotIn(
+            'WHERE',
+            str(view.form_valid(view.form).query)
         )
 
     def test_is_form_submitted_method(self):
