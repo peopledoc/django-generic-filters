@@ -3,12 +3,15 @@ import six
 
 from django import forms
 from django.http import QueryDict
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.views.generic import ListView
 from django.views.generic.edit import FormMixin
 from django.utils.translation import ugettext_lazy as _
 
 from bunch import Bunch
+
+
+EMPTY_FILTER_VALUES = (None, '', '-1')
 
 
 def is_filter(value, form):
@@ -83,6 +86,19 @@ class FilteredListView(FormMixin, ListView):
 
         return filters
 
+    def clean_qs_filter_field(self, key, value):
+        if value in EMPTY_FILTER_VALUES:
+            return None
+
+        if isinstance(value, QuerySet):
+            if value.exists():
+                return {key: value}
+        elif isinstance(value, (tuple, list)):
+            if len(value) > 0:
+                return {'%s__in' % key: value}
+        else:
+            return {key: value}
+
     def form_valid(self, form):
         """
         The form_valid is reponsible for filtering and ordering the
@@ -108,18 +124,17 @@ class FilteredListView(FormMixin, ListView):
 
         # Handle get_qs_filters
         filters = {}
+        extra_conditions = getattr(self, 'qs_filter_fields_conditions', None)
+        clean_qs_filter_field = self.clean_qs_filter_field
+
         for k, v in six.iteritems(self.get_qs_filters()):
-            field = form.cleaned_data.get(v)
-            if field != '' and field != '-1':
-                filters[k] = field
+            qs_filter = clean_qs_filter_field(k, form.cleaned_data.get(v))
+            if qs_filter is not None:
+                filters.update(qs_filter)
 
                 # Get extra condition for a field to on the filters
-                if hasattr(self, 'qs_filter_fields_conditions'):
-                    try:
-                        filter_fields_conditions = self.\
-                            qs_filter_fields_conditions[k]
-                    except KeyError:
-                        filter_fields_conditions = {}
+                if extra_conditions is not None:
+                    filter_fields_conditions = extra_conditions.get(k, {})
 
                     for key, value in six.iteritems(filter_fields_conditions):
                         filters[key] = value
@@ -169,8 +184,10 @@ class FilteredListView(FormMixin, ListView):
 
             # Hide filter_fields
             if hasattr(self, 'filter_fields'):
-                for field in self.filter_fields:
-                    self._form.fields[field].widget = forms.HiddenInput()
+                for fieldname in self.filter_fields:
+                    field = self._form.fields[fieldname]
+                    hidden_widget = getattr(field, 'hidden_widget', forms.HiddenInput)
+                    field.widget = hidden_widget()
 
             return self._form
 

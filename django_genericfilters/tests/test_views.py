@@ -279,7 +279,7 @@ class FilteredViewTestCase(TestCase):
 
     def test_filtered_list_view__none(self):
         """
-            FAIL : None value add "IS NULL" filters instead of ignore it.
+            FIXED : None value add "IS NULL" filters instead of ignore it.
         """
         view = views.FilteredListView(qs_filter_fields={'city': 'city', 'people__name': 'people'},
                                       form_class=self.Form,
@@ -305,7 +305,8 @@ class FilteredViewTestCase(TestCase):
 
     def test_filtered_list_view__multiplechoice(self):
         """
-            FAIL : filtered filed has HiddenWidget widgets that cannot handle multiple values
+            FIXED : filtered fields has HiddenWidget widgets that cannot handle multiple values.
+                    Use Field.hidden_widget instead.
         """
         view = views.FilteredListView(filter_fields=['organization'],
                                       form_class=self.Form,
@@ -315,7 +316,7 @@ class FilteredViewTestCase(TestCase):
 
         self.assertTrue(view.form.is_valid(), view.form.errors)
         self.assertIn(
-            'WHERE "django_genericfilters_querymodel"."organization" = A',
+            'WHERE "django_genericfilters_querymodel"."organization" IN (A)',
             str(view.form_valid(view.form).query)
         )
 
@@ -332,9 +333,9 @@ class FilteredViewTestCase(TestCase):
 
     def test_filtered_list_view__multiplechoice__qs_filter_field(self):
         """
-            FAIL : When using qs_filter_field, the behaviour changes because
-                   the HiddenWidget trick only works with filter_field attribute.
-                   But it compares a list with EQUAL operator instead of IN. 
+            FIXED : When using qs_filter_field, the behaviour changes because
+                    the HiddenWidget trick only works with filter_field attribute.
+                    But it compares a list with EQUAL operator instead of IN.
         """
         people = ParentModel.objects.create(name='fake')
 
@@ -349,7 +350,7 @@ class FilteredViewTestCase(TestCase):
 
         self.assertTrue(view.form.is_valid(), view.form.errors)
         self.assertIn(
-            'WHERE "django_genericfilters_querymodel"."organization" = A',
+            'WHERE "django_genericfilters_querymodel"."organization" IN (A)',
             str(view.form_valid(view.form).query)
         )
         self.assertEqual(1, view.form_valid(view.form).count())
@@ -382,7 +383,7 @@ class FilteredViewTestCase(TestCase):
 
     def test_filtered_list_view__modelchoice__empty_queryset(self):
         """
-            FAIL : Empty queryset in ModelChoiceField add "IS NULL" filters instead of ignore it.
+            FIXED : Empty queryset in ModelChoiceField add "IS NULL" filters instead of ignore it.
         """
         view = views.FilteredListView(qs_filter_fields={'city': 'city', 'people': 'parent'},
                                       form_class=self.Form,
@@ -397,7 +398,7 @@ class FilteredViewTestCase(TestCase):
 
     def test_filtered_list_view__modelchoice__none(self):
         """
-            FAIL : Empty queryset in ModelChoiceField add "IS NULL" filters instead of ignore it.
+            FIXED : Empty queryset in ModelChoiceField add "IS NULL" filters instead of ignore it.
         """
         view = views.FilteredListView(qs_filter_fields={'city': 'city', 'people': 'parent'},
                                       form_class=self.Form,
@@ -411,6 +412,37 @@ class FilteredViewTestCase(TestCase):
         )
 
     def test_filtered_list_view__multiplemodelchoice(self):
+        stateA = StatusModel.objects.create(name='stateA')
+        stateB = StatusModel.objects.create(name='stateB')
+
+        view = views.FilteredListView(filter_fields=["city", 'status'],
+                                      form_class=self.Form,
+                                      model=self.QueryModel)
+
+        setup_view(view, RequestFactory().get('/fake', MultiValueDict({"status": [stateA.pk]})))
+        view.form.is_valid()
+        self.assertIn(
+            'WHERE "django_genericfilters_querymodel"."status" = '
+            '(SELECT U0."id" AS Col1 FROM "django_genericfilters_statusmodel" U0 WHERE U0."id" IN (%s))' % stateA.pk,
+            str(view.form_valid(view.form).query)
+        )
+
+        view = views.FilteredListView(filter_fields=["city", 'status'],
+                                      form_class=self.Form,
+                                      model=self.QueryModel)
+
+        setup_view(view, RequestFactory().get('/fake', MultiValueDict({"status": [stateA.pk, stateB.pk]})))
+        view.form.is_valid()
+        self.assertIn(
+            'WHERE "django_genericfilters_querymodel"."status" = '
+            '(SELECT U0."id" AS Col1 FROM "django_genericfilters_statusmodel" U0 WHERE U0."id" IN (%s, %s))' % (
+                stateA.pk,
+                stateB.pk
+            ),
+            str(view.form_valid(view.form).query)
+        )
+
+    def test_filtered_list_view__multiplemodelchoice__qs_filter_field(self):
         stateA = StatusModel.objects.create(name='stateA')
         stateB = StatusModel.objects.create(name='stateB')
 
@@ -443,7 +475,7 @@ class FilteredViewTestCase(TestCase):
 
     def test_filtered_list_view__multiplemodelchoice__invalid_id(self):
         """
-            FAIL : Invalid id in MultipleModelChoiceField generate a None value and add "IS NULL" filter instead of ignore it.
+            FIXED : Invalid id in MultipleModelChoiceField generate a None value and add "IS NULL" filter instead of ignore it.
         """
         StatusModel.objects.create(name='stateA')
         StatusModel.objects.create(name='stateB')
@@ -461,7 +493,7 @@ class FilteredViewTestCase(TestCase):
 
     def test_filtered_list_view__multiplemodelchoice__none(self):
         """
-            FAIL : Empty queryset in MultipleModelChoiceField is added as subrequest in filter and raises an sql error instead of ignore it.
+            FIXED : Empty queryset in MultipleModelChoiceField is added as subrequest in filter and raises an sql error instead of ignore it.
         """
         people = ParentModel.objects.create(name='fake')
 
