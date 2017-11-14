@@ -92,7 +92,7 @@ class FilteredListView(FormMixin, ListView):
 
         if isinstance(value, QuerySet):
             if value.exists():
-                return {key: value}
+                return {'%s__in' % key: value}
         elif isinstance(value, (tuple, list)):
             if len(value) > 0:
                 return {'%s__in' % key: value}
@@ -186,7 +186,8 @@ class FilteredListView(FormMixin, ListView):
             if hasattr(self, 'filter_fields'):
                 for fieldname in self.filter_fields:
                     field = self._form.fields[fieldname]
-                    hidden_widget = getattr(field, 'hidden_widget', forms.HiddenInput)
+                    hidden_widget = getattr(field, 'hidden_widget',
+                                            forms.HiddenInput)
                     field.widget = hidden_widget()
 
             return self._form
