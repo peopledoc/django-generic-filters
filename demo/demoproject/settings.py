@@ -1,4 +1,5 @@
 """Django settings for django-generic-filters demo project."""
+from os import environ
 from os.path import abspath, dirname, join
 
 
@@ -16,12 +17,15 @@ WSGI_APPLICATION = 'demoproject.wsgi.application'
 
 # Database.
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': join(data_dir, 'db.sqlite'),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "test",
+        "USER": environ.get("DJANGO_DB_USER", environ.get("USER")),
+        'PASSWORD': environ.get("DJANGO_DB_PASSWORD", ""),
+        'HOST': '',
+        'PORT': '',
     }
 }
-
 
 # Template.
 TEMPLATES = [

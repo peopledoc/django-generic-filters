@@ -4,6 +4,8 @@ django generic filters implement a set of mixin to work with ordered
 and filtered queryset.
 
 """
+from six import string_types
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
@@ -66,6 +68,13 @@ class OrderFormMixin(object):
             _("Don't forget to implements get_order_by_choices"))
 
 
+def clean_yesno(value):
+    if isinstance(value, string_types):
+        return {"yes": True, "no": False}.get(value, value)
+
+    return value
+
+
 class FilteredForm(OrderFormMixin, QueryFormMixin, forms.Form):
     """
     FilteredForm is like a classic forms. But It use OrderFormMixin
@@ -74,8 +83,6 @@ class FilteredForm(OrderFormMixin, QueryFormMixin, forms.Form):
 
     def clean(self):
         data = self.cleaned_data
-        yesno = {"yes": True, "no": False}
-        update = {key: yesno.get(value, value)
-                  for key, value in data.items()}
+        update = {key: clean_yesno(value) for key, value in data.items()}
         data.update(update)
         return data
