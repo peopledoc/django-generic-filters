@@ -2,10 +2,14 @@ Changelog
 =========
 
 
-1.8 (unreleased)
+1.8 (2017-12-04)
 ----------------
 
-- Nothing changed yet.
+- Fix pep8 issues. Replace sqlite database by postgresql in demo settings (more strict)
+- Fix HiddenWidget issue with (Model)MultipleChoiceField
+- Fix IS NULL filter issue when fields are empty (None, [] or empty queryset)
+- Generate "model"."column" IN (...) instead of "model"."colunm" = [...]
+- Improve FilterView tests for (Multiple)ModelChoices and (Multiple)Choices fields
 
 
 1.7 (2017-05-23)
