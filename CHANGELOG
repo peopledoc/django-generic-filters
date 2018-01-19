@@ -5,7 +5,7 @@ Changelog
 1.9 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Make choice label optionaly safely rendered in html
 
 
 1.8 (2017-12-04)
