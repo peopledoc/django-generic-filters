@@ -55,11 +55,13 @@ class FilteredViewTestCase(TestCase):
         """
         Define a dummy model for this test case
         """
-        people = models.ForeignKey(ParentModel)
+        people = models.ForeignKey(ParentModel, on_delete=models.CASCADE)
         city = models.CharField(max_length=250)
         country = models.CharField(max_length=250)
         organization = models.CharField(max_length=250)
-        status = models.ForeignKey(StatusModel, null=True)
+        status = models.ForeignKey(
+            StatusModel, null=True, on_delete=models.CASCADE
+        )
 
     class Form(FilteredForm):
 

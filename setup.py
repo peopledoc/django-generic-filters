@@ -15,7 +15,7 @@ README = read_relative_file('README.rst')
 VERSION = read_relative_file('VERSION')
 PACKAGES = ['django_genericfilters']
 REQUIRES = [
-    'Django>=1.8,<1.12',
+    'Django>=1.8,<3.1',
     'bunch',
 ]
 
@@ -29,6 +29,8 @@ if __name__ == '__main__':  # Don't run setup() when we import this module.
                        'License :: OSI Approved :: BSD License',
                        'Programming Language :: Python :: 2',
                        'Programming Language :: Python :: 2.7',
+                       'Programming Language :: Python :: 3',
+                       'Programming Language :: Python :: 3.6',
                        'Framework :: Django',
                        ],
           keywords='class-based view, generic view, filters',

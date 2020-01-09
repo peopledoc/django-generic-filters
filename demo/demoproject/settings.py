@@ -1,4 +1,8 @@
 """Django settings for django-generic-filters demo project."""
+
+from distutils.version import StrictVersion
+from django.utils.version import get_version
+
 from os import environ
 from os.path import abspath, dirname, join
 
@@ -75,13 +79,22 @@ INSTALLED_APPS = (
 
 
 # Default middlewares. You may alter the list later.
-MIDDLEWARE_CLASSES = [
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-]
+if StrictVersion(get_version()) >= StrictVersion('1.10'):
+    MIDDLEWARE = [
+        'django.middleware.common.CommonMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+    ]
+else:
+    MIDDLEWARE_CLASSES = [
+        'django.middleware.common.CommonMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+    ]
 
 # Development configuration.
 DEBUG = True

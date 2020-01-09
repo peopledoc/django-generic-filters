@@ -1,7 +1,8 @@
 # coding=utf8
 """Test suite for django-generic-filters."""
-from django.core.urlresolvers import reverse
 from django.test import TestCase
+
+from demoproject.compat import reverse
 
 
 class HomeViewTestCase(TestCase):
