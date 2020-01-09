@@ -15,9 +15,9 @@ filter the results:
 * validate the user's input using a Django form;
 * filter the Django view's queryset using form's cleaned data.
 
-.. image:: https://secure.travis-ci.org/novafloss/django-generic-filters.png?branch=master
+.. image:: https://secure.travis-ci.org/peopledoc/django-generic-filters.png?branch=master
    :alt: Build Status
-   :target: https://secure.travis-ci.org/novafloss/django-generic-filters
+   :target: https://secure.travis-ci.org/peopledoc/django-generic-filters
 
 
 *******
