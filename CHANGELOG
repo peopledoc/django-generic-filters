@@ -1,6 +1,8 @@
 Changelog
 =========
 
+- Add support for Django 2.2 & 3.0
+- Drop support for Django 1.8, 1.9 & 1.10
 
 1.9 (2018-19-01)
 ----------------
