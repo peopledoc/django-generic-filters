@@ -1,36 +1,24 @@
 language: python
-matrix:
-    include:
-        - python: 2.7
-          env: TOX_ENV=py27-django18
-        - python: 2.7
-          env: TOX_ENV=py27-django19
-        - python: 2.7
-          env: TOX_ENV=py27-django110
-        - python: 2.7
-          env: TOX_ENV=py27-django111
-
-        - python: 3.4
-          env: TOX_ENV=py34-django18
-        - python: 3.4
-          env: TOX_ENV=py34-django19
-        - python: 3.4
-          env: TOX_ENV=py34-django110
-        - python: 3.4
-          env: TOX_ENV=py34-django111
-
-        - python: 3.5
-          env: TOX_ENV=py35-django18
-        - python: 3.5
-          env: TOX_ENV=py35-django19
-        - python: 3.5
-          env: TOX_ENV=py35-django110
-        - python: 3.5
-          env: TOX_ENV=py35-django111
-
-        - python: 2.7
-          env: TOX_ENV=flake8
-script:
-    - tox -e $TOX_ENV
+dist: bionic
+sudo: true
+services:
+  - postgresql
+python:
+  - 2.7
+  - 3.5
+  - 3.6
+  - 3.7
+  - 3.8
 install:
-    pip install tox
+  - pip install tox
+  - pip install -q tox-travis
+script:
+    - tox
+
+stages:
+  - lint
+  - test
+
+jobs:
+  include:
+    - { stage: lint, env: TOXENV=flake8, python: 3.8 }

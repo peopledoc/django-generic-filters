@@ -1,17 +1,14 @@
 import unittest
 
-from django.template.base import TOKEN_TEXT
-from django.template.base import Parser
-from django.template.base import Token
-from django.template.base import Variable
+from django import forms
+from django.template.base import TOKEN_TEXT, Parser, Token, Variable
 
 import mock
 
-from django_genericfilters.templatetags.updateurl import token_kwargs
-from django_genericfilters.templatetags.updateurl import token_value
-from django_genericfilters.templatetags.updateurl import \
-    tag_update_query_string
-from django_genericfilters.templatetags.updateurl import update_query_string
+from django_genericfilters.templatetags.updateurl import (
+    token_kwargs, token_value, tag_update_query_string, update_query_string
+)
+from django_genericfilters.templatetags.utils import is_checkbox
 
 
 class TemplateTagTestCase(unittest.TestCase):
@@ -56,3 +53,18 @@ class TemplateTagTestCase(unittest.TestCase):
         self.assertEqual(
             node.render({'request': request, 'page': 'page', 'num_page': 2}),
             u'/fake?page=2')
+
+    def test_is_checkbox(self):
+        class MockForm(forms.Form):
+            a = forms.CharField()
+            b = forms.BooleanField()
+
+        form = MockForm()
+
+        boundfield_a, boundfield_b = form.visible_fields()
+
+        self.assertEqual("a", boundfield_a.name)
+        self.assertFalse(is_checkbox(boundfield_a))
+
+        self.assertEqual("b", boundfield_b.name)
+        self.assertTrue(is_checkbox(boundfield_b))

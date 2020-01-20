@@ -1,4 +1,5 @@
 """Django settings for django-generic-filters demo project."""
+
 from os import environ
 from os.path import abspath, dirname, join
 
@@ -75,7 +76,7 @@ INSTALLED_APPS = (
 
 
 # Default middlewares. You may alter the list later.
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

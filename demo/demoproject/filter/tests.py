@@ -1,5 +1,6 @@
 from django.test import TestCase
-from django.core.urlresolvers import reverse
+
+from demoproject.compat import reverse
 
 
 class FilteredListView(TestCase):
