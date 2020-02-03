@@ -106,6 +106,22 @@ Several form mixins are provided to cover frequent use cases:
 
 See "mixin" documentation for details.
 
+*******
+Release
+*******
+
+To prepare a new version:
+
+* Create a branch named ``release/<version>``
+* In a commit, change the ``CHANGELOG`` and ``VERSION`` file to remove the ``.dev0`` and set the date of the release
+* In a second commit, change the ``VERSION`` to the next version number + ``.dev0``
+* Create a PR for your branch
+* When the PR is merged, tag the first commit with the version number, and create a github release using the ``CHANGELOG``
+
+To release a new version (including the wheel)::
+
+    pip install wheel
+    python setup.py sdist bdist_wheel upload
 
 **********
 Ressources
