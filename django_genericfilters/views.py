@@ -1,5 +1,3 @@
-import six
-
 from django import forms
 from django.http import QueryDict
 from django.db.models import Q, QuerySet
@@ -126,7 +124,7 @@ class FilteredListView(FormMixin, ListView):
         extra_conditions = getattr(self, 'qs_filter_fields_conditions', None)
         clean_qs_filter_field = self.clean_qs_filter_field
 
-        for k, v in six.iteritems(self.get_qs_filters()):
+        for k, v in self.get_qs_filters().items():
             qs_filter = clean_qs_filter_field(k, form.cleaned_data.get(v))
             if qs_filter is not None:
                 filters.update(qs_filter)
@@ -135,7 +133,7 @@ class FilteredListView(FormMixin, ListView):
                 if extra_conditions is not None:
                     filter_fields_conditions = extra_conditions.get(k, {})
 
-                    for key, value in six.iteritems(filter_fields_conditions):
+                    for key, value in filter_fields_conditions.items():
                         filters[key] = value
 
         queryset = queryset.filter(**filters)

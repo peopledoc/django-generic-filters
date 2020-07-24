@@ -1,3 +1,4 @@
+import urllib
 import sys
 
 from django import forms
@@ -8,7 +9,6 @@ from django.utils.datastructures import MultiValueDict
 
 from django_genericfilters import views
 from django_genericfilters.forms import FilteredForm
-from six.moves import urllib
 
 
 def setup_view(view, request, *args, **kwargs):

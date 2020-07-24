@@ -3,8 +3,6 @@ django generic filters implement a set of mixin to work with ordered
 and filtered queryset.
 
 """
-from six import string_types
-
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
@@ -68,7 +66,7 @@ class OrderFormMixin(object):
 
 
 def clean_yesno(value):
-    if isinstance(value, string_types):
+    if isinstance(value, str):
         return {"yes": True, "no": False}.get(value, value)
 
     return value
