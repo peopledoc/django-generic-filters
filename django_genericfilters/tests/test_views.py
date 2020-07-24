@@ -122,7 +122,7 @@ class FilteredViewTestCase(TestCase):
 
         view.form.is_valid()
         queryset = view.form_valid(view.form)
-        self.assertEqual(queryset.query.order_by, [])
+        self.assertEqual(list(queryset.query.order_by), [])
 
     def test_default_order_fallback_form_invalid(self):
         """Queryset is unordered if no default_order or data (invalid form)."""
@@ -134,7 +134,7 @@ class FilteredViewTestCase(TestCase):
 
         view.form.is_valid()
         queryset = view.form_invalid(view.form)
-        self.assertEqual(queryset.query.order_by, [])
+        self.assertEqual(list(queryset.query.order_by), [])
 
     def test_default_order_fallback_form_empty(self):
         """Queryset is unordered if no default_order or data (empty form)."""
@@ -145,7 +145,7 @@ class FilteredViewTestCase(TestCase):
             request)
 
         queryset = view.form_empty()
-        self.assertEqual(queryset.query.order_by, [])
+        self.assertEqual(list(queryset.query.order_by), [])
 
     def test_default_filter(self):
         """Test the default filter"""
@@ -187,7 +187,7 @@ class FilteredViewTestCase(TestCase):
 
         view.form.is_valid()
         queryset = view.form_valid(view.form)
-        self.assertEqual(queryset.query.order_by, ['last_name'])
+        self.assertEqual(list(queryset.query.order_by), ['last_name'])
 
     def test_default_order_form_invalid(self):
         """Queryset is ordered by default_order when no order_by in request
@@ -202,7 +202,7 @@ class FilteredViewTestCase(TestCase):
 
         view.form.is_valid()
         queryset = view.form_invalid(view.form)
-        self.assertEqual(queryset.query.order_by, ['last_name'])
+        self.assertEqual(list(queryset.query.order_by), ['last_name'])
 
     def test_default_order_form_empty(self):
         """Queryset is ordered by default_order when no order_by in request."""
@@ -215,7 +215,7 @@ class FilteredViewTestCase(TestCase):
             request)
 
         queryset = view.form_empty()
-        self.assertEqual(queryset.query.order_by, ['last_name'])
+        self.assertEqual(list(queryset.query.order_by), ['last_name'])
 
     def test_default_order_reverse(self):
         """To test order reverse"""
@@ -229,7 +229,7 @@ class FilteredViewTestCase(TestCase):
 
         view.form.is_valid()
         queryset = view.form_valid(view.form)
-        self.assertEqual(queryset.query.order_by, ['-last_name'])
+        self.assertEqual(list(queryset.query.order_by), ['-last_name'])
 
     def test_default_order_in_request(self):
         """Test with order_by in data."""
@@ -243,7 +243,7 @@ class FilteredViewTestCase(TestCase):
 
         view.form.is_valid()
         queryset = view.form_valid(view.form)
-        self.assertEqual(queryset.query.order_by, ['last_name'])
+        self.assertEqual(list(queryset.query.order_by), ['last_name'])
 
     def test_filtered_list_view(self):
         a = views.FilteredListView(filter_fields=['city'],
@@ -291,7 +291,7 @@ class FilteredViewTestCase(TestCase):
                                       form_class=self.Form,
                                       model=self.QueryModel)
 
-        data = {"city": None, "people": "S"}
+        data = {"city": "None", "people": "S"}
         setup_view(view, RequestFactory().get('/fake', data))
         view.form.is_valid()
         self.assertIn(
@@ -306,7 +306,7 @@ class FilteredViewTestCase(TestCase):
                                       form_class=self.Form,
                                       model=self.QueryModel)
 
-        data = {"city": "N", "people": None}
+        data = {"city": "N", "people": "None"}
         setup_view(view, RequestFactory().get('/fake', data))
         view.form.is_valid()
         self.assertIn(
@@ -431,7 +431,7 @@ class FilteredViewTestCase(TestCase):
                                       form_class=self.Form,
                                       model=self.QueryModel)
 
-        data = {"city": "N", "parent": None}
+        data = {"city": "N", "parent": "None"}
         setup_view(view, RequestFactory().get('/fake', data))
         view.form.is_valid()
         self.assertIn(
