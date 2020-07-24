@@ -43,14 +43,6 @@ class StatusModel(models.Model):
 
 class FilteredViewTestCase(TestCase):
 
-    def assertIn(self, a, b, msg=None):
-        if sys.version_info[:2] == (2, 6):
-            # for 2.6 compatibility
-            if a not in b:
-                self.fail("%s is not in %b" % (repr(a), repr(b)))
-        else:
-            super(FilteredViewTestCase, self).assertIn(a, b, msg=msg)
-
     class QueryModel(models.Model):
         """
         Define a dummy model for this test case
