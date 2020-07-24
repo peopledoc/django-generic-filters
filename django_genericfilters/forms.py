@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 django generic filters implement a set of mixin to work with ordered
 and filtered queryset.
