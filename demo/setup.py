@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def read_relative_file(filename):
@@ -12,11 +12,11 @@ def read_relative_file(filename):
 NAME = 'django-genericfilters-demo'
 README = read_relative_file('README')
 VERSION = '0.1'
-PACKAGES = ['demoproject']
+PACKAGES = find_packages()
 REQUIRES = [
     'django-generic-filters',
     'mock',
-    'Django>=1.8,<1.12',
+    'Django',
     'coverage', ]
 
 
