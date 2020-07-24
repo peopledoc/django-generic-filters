@@ -14,7 +14,7 @@ README = read_relative_file('README.rst')
 VERSION = read_relative_file('VERSION')
 PACKAGES = ['django_genericfilters']
 REQUIRES = [
-    'Django>=1.11,<3.1',
+    'Django',
     'munch',
 ]
 
