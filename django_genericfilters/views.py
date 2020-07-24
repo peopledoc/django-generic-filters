@@ -5,7 +5,7 @@ from django.views.generic import ListView
 from django.views.generic.edit import FormMixin
 from django.utils.translation import ugettext_lazy as _
 
-from bunch import Bunch
+from munch import Munch
 
 
 EMPTY_FILTER_VALUES = (None, '', '-1')
@@ -210,13 +210,13 @@ class FilteredListView(FormMixin, ListView):
 
         if hasattr(self, 'filter_fields'):
             for field in self.filter_fields:
-                new_filter = Bunch()
+                new_filter = Munch()
                 new_filter.label = self.form.fields[field].label
                 new_filter.name = field
                 new_filter.choices = []
                 selected = False
                 for choice in self.form.fields[field].choices:
-                    new_choice = Bunch()
+                    new_choice = Munch()
                     new_choice.value = choice[0]
                     new_choice.label = choice[1]
                     yesno = {"yes": True, "no": False}
@@ -237,7 +237,7 @@ class FilteredListView(FormMixin, ListView):
                 if not self.form.fields[field].required and \
                         not [c for c in new_filter.choices
                              if c.value == '-1' or c.value == '']:
-                    all_choice = Bunch(value='', label=_('All'),
+                    all_choice = Munch(value='', label=_('All'),
                                        is_selected=(not selected))
                     new_filter.choices.insert(0, all_choice)
                 filters.append(new_filter)
