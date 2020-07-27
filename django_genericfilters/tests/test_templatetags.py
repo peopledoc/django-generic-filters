@@ -2,7 +2,7 @@ import unittest
 
 from django import forms
 from django.template import Template, Context
-from django.template.base import Parser, Token, Variable
+from django.template.base import Parser, Variable
 from django.test import RequestFactory
 
 from django_genericfilters.templatetags.updateurl import (
