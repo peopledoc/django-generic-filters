@@ -1,8 +1,11 @@
 Changelog
 =========
 
-1.11 (unreleased)
-----------------
+2.0.0 (2020-07-27)
+------------------
+
+- Fix a lot of slightly broken things in the packaging and boilerplate, test the
+  lib for real on recent python/django versions (#62)
 
 1.10 (2020-02-03)
 ----------------
