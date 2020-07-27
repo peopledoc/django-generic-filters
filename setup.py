@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 from setuptools import setup
 
@@ -15,8 +14,8 @@ README = read_relative_file('README.rst')
 VERSION = read_relative_file('VERSION')
 PACKAGES = ['django_genericfilters']
 REQUIRES = [
-    'Django>=1.11,<3.1',
-    'bunch',
+    'Django',
+    'munch',
 ]
 
 
@@ -27,10 +26,10 @@ if __name__ == '__main__':  # Don't run setup() when we import this module.
           long_description=README,
           classifiers=['Development Status :: 4 - Beta',
                        'License :: OSI Approved :: BSD License',
-                       'Programming Language :: Python :: 2',
-                       'Programming Language :: Python :: 2.7',
                        'Programming Language :: Python :: 3',
                        'Programming Language :: Python :: 3.6',
+                       'Programming Language :: Python :: 3.7',
+                       'Programming Language :: Python :: 3.8',
                        'Framework :: Django',
                        ],
           keywords='class-based view, generic view, filters',

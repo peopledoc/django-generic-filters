@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # django-generic-filters documentation build configuration file, created by
 # sphinx-quickstart on Mon Aug 27 11:37:23 2012.

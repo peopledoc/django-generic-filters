@@ -15,10 +15,9 @@ Example:
    {% update_query_string with page=paginator.next_page %}
 
 """
-import six
-from six.moves import urllib
 
 import re
+import urllib
 
 from django import template
 from django.template.base import FilterExpression
@@ -102,17 +101,17 @@ class UpdateQueryStringNode(template.Node):
         try:
             url = url.resolve(context)
         except AttributeError:
-            url = six.text_type(url)
+            url = str(url)
         updates = {}
-        for key, value in six.iteritems(self.qs_updates):
+        for key, value in self.qs_updates.items():
             try:
                 key = key.resolve(context)
             except AttributeError:
-                key = six.text_type(key)
+                key = str(key)
             try:
                 value = value.resolve(context)
             except AttributeError:
-                value = six.text_type(value)
+                value = str(value)
             updates[key] = value
         new_url = update_query_string(url, updates)
         try:

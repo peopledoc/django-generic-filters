@@ -1,12 +1,12 @@
 import unittest
 
 from django import forms
-from django.template.base import TOKEN_TEXT, Parser, Token, Variable
-
-import mock
+from django.template import Template, Context
+from django.template.base import Parser, Variable
+from django.test import RequestFactory
 
 from django_genericfilters.templatetags.updateurl import (
-    token_kwargs, token_value, tag_update_query_string, update_query_string
+    token_kwargs, token_value, update_query_string
 )
 from django_genericfilters.templatetags.utils import is_checkbox
 
@@ -40,18 +40,16 @@ class TemplateTagTestCase(unittest.TestCase):
             '/foo/?bar=created')
 
     def test_tag_update_query_string(self):
-        request = mock.Mock()
-        request.get_full_path = mock.Mock(return_value='/fake')
-        parser = Parser('')
-        token = Token(TOKEN_TEXT, 'tag with "page"="2"')
-        node = tag_update_query_string(parser, token)
+        template = Template(
+            "{% load updateurl %}{% update_query_string with page=num_page %}"
+        )
         self.assertEqual(
-            node.render({'request': request}),
-            u'/fake?page=2')
-        token = Token(TOKEN_TEXT, 'tag with page=num_page')
-        node = tag_update_query_string(parser, token)
-        self.assertEqual(
-            node.render({'request': request, 'page': 'page', 'num_page': 2}),
+            template.render(
+                Context(
+                    {'request': RequestFactory().get("/fake"),
+                     'page': 'page', 'num_page': 2}
+                )
+            ),
             u'/fake?page=2')
 
     def test_is_checkbox(self):
