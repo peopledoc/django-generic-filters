@@ -4,16 +4,19 @@ sudo: true
 services:
   - postgresql
 python:
-  - 2.7
-  - 3.5
   - 3.6
   - 3.7
   - 3.8
 install:
-  - pip install tox
-  - pip install -q tox-travis
+  - pip install tox tox-travis
 script:
-    - tox
+  - tox
+env:
+  global:
+    PGDATABASE: django_generic_filters
+    PGHOST: localhost
+    PGUSER: postgres
+
 
 stages:
   - lint

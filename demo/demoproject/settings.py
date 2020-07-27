@@ -20,7 +20,7 @@ WSGI_APPLICATION = 'demoproject.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": environ["PGDATABASE"]
+        "NAME": environ.get("PGDATABASE", "django_generic_filters")
         # Configure database using standard PG* environment variables
         # https://www.postgresql.org/docs/current/libpq-envars.html
     }
