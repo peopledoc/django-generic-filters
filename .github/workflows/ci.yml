@@ -1,0 +1,146 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'master'
+    tags:
+      - '*'
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        include:
+
+          - name: Python 3.7 / Django 3.2
+            python_version: "3.7"
+            tox_env: py37-django32
+
+          - name: Python 3.8 / Django 3.2
+            python_version: "3.8"
+            tox_env: py38-django32
+
+          - name: Python 3.9 / Django 2.2
+            python_version: "3.9"
+            tox_env: py39-django22
+
+          - name: Python 3.9 / Django 3.0
+            python_version: "3.9"
+            tox_env: py39-django30
+
+          - name: Python 3.9 / Django 3.1
+            python_version: "3.9"
+            tox_env: py39-django31
+
+          - name: Python 3.9 / Django 3.2
+            python_version: "3.9"
+            tox_env: py39-django32
+
+          - name: Python 3.9 / Django 4.0
+            python_version: "3.9"
+            tox_env: py39-django40
+
+          - name: Python 3.10 / Django 3.2
+            python_version: "3.10"
+            tox_env: py310-django32
+
+          - name: Lint
+            python_version: "3.10"
+            tox_env: lint
+
+
+    name: "py${{ matrix.python_version }} / ${{ matrix.script }}"
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:12
+        # Set health checks to wait until postgres has started
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        id: setup-python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python_version }}
+
+      - name: Pip, Pre-commit & Poetry caches
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/
+          key: ${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('poetry.lock') }}-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install Dev dependencies
+        run: poetry install --extras "django sqlalchemy"
+
+      - name: Run ${{ matrix.script }}
+        run: scripts/${{ matrix.script }}
+        env:
+          COVERAGE_FILE: ".coverage.${{ matrix.python_version }}"
+          PGHOST: localhost
+          PGUSER: postgres
+          PGPASSWORD: postgres
+
+      - name: Store coverage file
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: .coverage.${{ matrix.python_version }}
+
+  report-status:
+    name: success
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+
+      - name: Report success
+        run: echo 'Success !'
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        id: download
+        with:
+          name: 'coverage'
+
+      - name: Set up Python
+        id: setup-python
+        uses: actions/setup-python@v2
+
+      # There's no assurance that this will be the same version as the coverage
+      # in poetry.lock, but this should not be a problem.
+      - name: Install PyCoverage
+        run: pip install coverage
+
+      - name: Combine coverage files
+        run: coverage combine
+
+      - name: Produce coverage.xml
+        run: coverage xml
+
+      - name: Display coverage
+        uses: ewjoachim/coverage-comment-action@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
