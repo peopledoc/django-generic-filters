@@ -5,8 +5,7 @@ from os.path import abspath, dirname, join
 
 # Configure some relative directories.
 demoproject_dir = dirname(abspath(__file__))
-demo_dir = dirname(demoproject_dir)
-root_dir = dirname(demo_dir)
+root_dir = dirname(demoproject_dir)
 data_dir = join(root_dir, "var")
 
 
