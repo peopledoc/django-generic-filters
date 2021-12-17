@@ -21,18 +21,8 @@ jobs:
         with:
           python-version: ${{ matrix.python_version }}
 
-      - name: Pip, Pre-commit & Poetry caches
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cache/
-          key: ${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('poetry.lock') }}-${{ hashFiles('.pre-commit-config.yaml') }}
-
-      - name: Install Poetry
-        run: pip install poetry
-
-      - name: Install Dev dependencies
-        run: poetry install --extras "django sqlalchemy"
+      - name: Install
+        run: pip install build
 
       - name: Wait for tests to succeed
         uses: fountainhead/action-wait-for-check@v1.0.0
@@ -45,7 +35,11 @@ jobs:
         if: steps.wait-for-ci.outputs.conclusion != 'success'
         run: exit 1
 
-      - name: Publish on PyPI
-        run: scripts/publish
-        env:
-          PYPI_TOKEN: "${{ secrets.PYPI_TOKEN }}"
+      - name: Build package
+        run: python -m build
+
+      - name: Publish a Python distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: "${{ secrets.PYPI_TOKEN }}"
