@@ -1,7 +1,7 @@
 from django import forms
 from django.db.models import Q, QuerySet
 from django.http import QueryDict
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView
 from django.views.generic.edit import FormMixin
 from munch import Munch
