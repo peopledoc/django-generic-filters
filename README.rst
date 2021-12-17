@@ -106,32 +106,6 @@ Several form mixins are provided to cover frequent use cases:
 
 See "mixin" documentation for details.
 
-***********
-Development
-***********
-
-.. code-block:: console
-
-    $ # Launch a postgres DB with:
-    $ docker-compose up -d
-
-    $ # Configure environment variables with
-    $ export PGDATABASE=db PGHOST=localhost PGUSER=postgres PGPASSWORD=password
-
-    $ # Launch tests with
-    $ tox
-
-    $ # Format code with
-    $ tox -e format
-
-*******
-Release
-*******
-
-Release in GitHub, GitHub Actions should take care of the rest.
-Note that there should be a release draft with a basic PR-based changelog, so
-start from this and iterate.
-
 **********
 Ressources
 **********

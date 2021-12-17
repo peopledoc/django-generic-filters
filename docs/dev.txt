@@ -42,43 +42,41 @@ Fork and branch
 Setup a development environment
 *******************************
 
-System requirements:
 
-* `Python`_ version 2.6 or 2.7, available as ``python`` command.
-  
-  .. note::
+***********
+Development
+***********
 
-     You may use `Virtualenv`_ to make sure the active ``python`` is the right
-     one.
+.. code-block:: console
 
-* make and wget to use the provided :file:`Makefile`.
+    $ # Launch a postgres DB with:
+    $ docker-compose up -d
 
-Execute:
+    $ # Configure environment variables with
+    $ export PGDATABASE=db PGHOST=localhost PGUSER=postgres PGPASSWORD=password
+    $ export DJANGO_SETTINGS_MODULE=demoproject.settings
 
-.. code-block:: sh
+    $ # Create a virtualenv, activate it and install dev dependencies
+    $ python3 -m venv .venv
+    $ source .venv/bin/activate
+    $ pip install -r requirements.txt
 
-   git clone git@github.com:novapost/django-generic-filters.git
-   cd django-generic-filters/
-   make develop
+    $ # Launch tests with
+    $ tox
 
-If you cannot execute the Makefile, read it and adapt the few commands it
-contains to your needs.
+    $ # Format code with
+    $ tox -e format
 
+    $ # Launch the demo
+    $ python -m django runserver
 
-************
-The Makefile
-************
+*******
+Release
+*******
 
-A :file:`Makefile` is provided to ease development. Use it to:
-
-* setup the development environment: ``make develop``
-* update it, as an example, after a pull: ``make update``
-* run tests: ``make test``
-* build documentation: ``make documentation``
-
-The :file:`Makefile` is intended to be a live reference for the development
-environment.
-
+Release in GitHub, GitHub Actions should take care of the rest.
+Note that there should be a release draft with a basic PR-based changelog, so
+start from this and iterate.
 
 *************
 Documentation
@@ -92,14 +90,13 @@ documentation.
 Test and build
 **************
 
-Use `the Makefile`_.
-
+Use ``tox``.
 
 *********************
 Demo project included
 *********************
 
-The :doc:`/demo` is part of the tests. Maintain it along with code and
+The demo is part of the tests. Maintain it along with code and
 documentation.
 
 
@@ -109,7 +106,7 @@ References
 
 .. target-notes::
 
-.. _`bugtracker`: 
+.. _`bugtracker`:
    https://github.com/novapost/django-generic-filters/issues
 .. _`rebase`: http://git-scm.com/book/en/Git-Branching-Rebasing
 .. _`merge-based rebase`: http://tech.novapost.fr/psycho-rebasing-en.html
