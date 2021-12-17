@@ -1,11 +1,11 @@
 import urllib
 
+import factory
 from django import forms
 from django.db import models
 from django.http import QueryDict
 from django.test import RequestFactory, TestCase
 from django.utils.datastructures import MultiValueDict
-import factory
 
 from django_genericfilters import views
 from django_genericfilters.forms import FilteredForm

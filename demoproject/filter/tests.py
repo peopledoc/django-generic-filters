@@ -1,5 +1,6 @@
-from demoproject.compat import reverse
 from django.test import TestCase
+
+from demoproject.compat import reverse
 
 
 class FilteredListView(TestCase):

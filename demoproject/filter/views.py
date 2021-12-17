@@ -1,6 +1,6 @@
-from demoproject.filter.forms import UserListForm
 from django.contrib.auth.models import User
 
+from demoproject.filter.forms import UserListForm
 from django_genericfilters.views import FilteredListView
 
 
