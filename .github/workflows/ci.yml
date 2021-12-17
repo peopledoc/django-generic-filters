@@ -57,7 +57,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:12
+        image: postgres
         # Set health checks to wait until postgres has started
         env:
           POSTGRES_PASSWORD: postgres
@@ -77,32 +77,22 @@ jobs:
         with:
           python-version: ${{ matrix.python_version }}
 
-      - name: Pip, Pre-commit & Poetry caches
+      - name: Pip cache
         uses: actions/cache@v2
         with:
           path: |
             ~/.cache/
-          key: ${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('poetry.lock') }}-${{ hashFiles('.pre-commit-config.yaml') }}
+          key: ${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('setup.py') }}
 
-      - name: Install Poetry
-        run: pip install poetry
+      - name: Install Tox
+        run: pip install tox
 
-      - name: Install Dev dependencies
-        run: poetry install --extras "django sqlalchemy"
-
-      - name: Run ${{ matrix.script }}
-        run: scripts/${{ matrix.script }}
+      - name: Run ${{ matrix.name }}
+        run: tox -e ${{ matrix.tox_env }}
         env:
-          COVERAGE_FILE: ".coverage.${{ matrix.python_version }}"
           PGHOST: localhost
           PGUSER: postgres
           PGPASSWORD: postgres
-
-      - name: Store coverage file
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage
-          path: .coverage.${{ matrix.python_version }}
 
   report-status:
     name: success
@@ -112,35 +102,3 @@ jobs:
 
       - name: Report success
         run: echo 'Success !'
-
-  coverage:
-    name: Coverage
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/download-artifact@v2
-        id: download
-        with:
-          name: 'coverage'
-
-      - name: Set up Python
-        id: setup-python
-        uses: actions/setup-python@v2
-
-      # There's no assurance that this will be the same version as the coverage
-      # in poetry.lock, but this should not be a problem.
-      - name: Install PyCoverage
-        run: pip install coverage
-
-      - name: Combine coverage files
-        run: coverage combine
-
-      - name: Produce coverage.xml
-        run: coverage xml
-
-      - name: Display coverage
-        uses: ewjoachim/coverage-comment-action@v1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
