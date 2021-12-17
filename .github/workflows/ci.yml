@@ -52,7 +52,7 @@ jobs:
             tox_env: lint
 
 
-    name: "py${{ matrix.python_version }} / ${{ matrix.script }}"
+    name: "${{ matrix.name }}"
     runs-on: ubuntu-latest
 
     services:
