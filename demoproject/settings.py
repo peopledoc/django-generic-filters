@@ -83,3 +83,5 @@ MIDDLEWARE = [
 
 # Development configuration.
 DEBUG = True
+
+USE_TZ = True
