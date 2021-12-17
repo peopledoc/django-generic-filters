@@ -1,14 +1,12 @@
 from django import forms
-from django.http import QueryDict
 from django.db.models import Q, QuerySet
+from django.http import QueryDict
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView
 from django.views.generic.edit import FormMixin
-from django.utils.translation import ugettext_lazy as _
-
 from munch import Munch
 
-
-EMPTY_FILTER_VALUES = (None, '', '-1')
+EMPTY_FILTER_VALUES = (None, "", "-1")
 
 
 def is_filter(value, form):
@@ -17,6 +15,7 @@ def is_filter(value, form):
 
 class FilteredListView(FormMixin, ListView):
     """A Generic ListView used to filter and order objects."""
+
     default_order = None
     default_filter = None
 
@@ -24,7 +23,7 @@ class FilteredListView(FormMixin, ListView):
         """
         Return True if the form is already submited. False otherwise
         """
-        return bool(self.request.method == 'GET' and self.request.GET)
+        return bool(self.request.method == "GET" and self.request.GET)
 
     def get_initial(self):
         """
@@ -35,14 +34,14 @@ class FilteredListView(FormMixin, ListView):
         if self.default_order:
             order_by = self.default_order
 
-            kwargs['order_by'] = order_by
-            kwargs['order_reverse'] = order_by.startswith('-')
+            kwargs["order_by"] = order_by
+            kwargs["order_reverse"] = order_by.startswith("-")
 
         return kwargs
 
     def get_form_kwargs(self):
         """Read GET data to return keyword arguments for the form."""
-        kwargs = {'initial': self.get_initial()}
+        kwargs = {"initial": self.get_initial()}
         data = QueryDict({}).copy()
 
         if self.default_filter:
@@ -51,7 +50,7 @@ class FilteredListView(FormMixin, ListView):
         if self.is_form_submitted():
             data.update(self.request.GET)
 
-        kwargs.update({'data': data})
+        kwargs.update({"data": data})
 
         return kwargs
 
@@ -74,10 +73,10 @@ class FilteredListView(FormMixin, ListView):
 
         filters = {}
 
-        if hasattr(self, 'qs_filter_fields'):
+        if hasattr(self, "qs_filter_fields"):
             filters = self.qs_filter_fields
 
-        elif hasattr(self, 'filter_fields'):
+        elif hasattr(self, "filter_fields"):
             for field in self.filter_fields:
                 filters[field] = field
 
@@ -89,10 +88,10 @@ class FilteredListView(FormMixin, ListView):
 
         if isinstance(value, QuerySet):
             if value.exists():
-                return {'%s__in' % key: value}
+                return {"%s__in" % key: value}
         elif isinstance(value, (tuple, list)):
             if len(value) > 0:
-                return {'%s__in' % key: value}
+                return {"%s__in" % key: value}
         else:
             return {key: value}
 
@@ -108,20 +107,20 @@ class FilteredListView(FormMixin, ListView):
         queryset = self.__get_queryset()
 
         # Handle QueryFormMixin
-        if is_filter('query', form):
-            query = form.cleaned_data['query']
+        if is_filter("query", form):
+            query = form.cleaned_data["query"]
             query_words = query.split()
             filters = None
             for f in self.search_fields:
                 for word in query_words:
-                    q = Q(**{f + '__icontains': word})
+                    q = Q(**{f + "__icontains": word})
                     filters = filters | q if filters else q
             if filters:
                 queryset = queryset.filter(filters)
 
         # Handle get_qs_filters
         filters = {}
-        extra_conditions = getattr(self, 'qs_filter_fields_conditions', None)
+        extra_conditions = getattr(self, "qs_filter_fields_conditions", None)
         clean_qs_filter_field = self.clean_qs_filter_field
 
         for k, v in self.get_qs_filters().items():
@@ -139,11 +138,11 @@ class FilteredListView(FormMixin, ListView):
         queryset = queryset.filter(**filters)
 
         # Handle OrderFormMixin
-        if is_filter('order_by', form):
-            order_field = form.cleaned_data['order_by']
+        if is_filter("order_by", form):
+            order_field = form.cleaned_data["order_by"]
             queryset = queryset.order_by(order_field)
 
-        if is_filter('order_reverse', form):
+        if is_filter("order_reverse", form):
             queryset = queryset.reverse()
 
         return queryset
@@ -180,11 +179,10 @@ class FilteredListView(FormMixin, ListView):
             self._form = self.get_form(form_class)
 
             # Hide filter_fields
-            if hasattr(self, 'filter_fields'):
+            if hasattr(self, "filter_fields"):
                 for fieldname in self.filter_fields:
                     field = self._form.fields[fieldname]
-                    hidden_widget = getattr(field, 'hidden_widget',
-                                            forms.HiddenInput)
+                    hidden_widget = getattr(field, "hidden_widget", forms.HiddenInput)
                     field.widget = hidden_widget()
 
             return self._form
@@ -195,9 +193,9 @@ class FilteredListView(FormMixin, ListView):
         the view.
         """
         kwargs = ListView.get_context_data(self, **kwargs)
-        kwargs['form'] = self.form
-        kwargs['filters'] = self.get_filters()
-        kwargs['stacked_fields'] = getattr(self, 'stacked_fields', [])
+        kwargs["form"] = self.form
+        kwargs["filters"] = self.get_filters()
+        kwargs["stacked_fields"] = getattr(self, "stacked_fields", [])
 
         return kwargs
 
@@ -208,7 +206,7 @@ class FilteredListView(FormMixin, ListView):
         """
         filters = []
 
-        if hasattr(self, 'filter_fields'):
+        if hasattr(self, "filter_fields"):
             for field in self.filter_fields:
                 new_filter = Munch()
                 new_filter.label = self.form.fields[field].label
@@ -220,11 +218,16 @@ class FilteredListView(FormMixin, ListView):
                     new_choice.value = choice[0]
                     new_choice.label = choice[1]
                     yesno = {"yes": True, "no": False}
-                    if hasattr(self.form, 'cleaned_data') and \
-                            field in self.form.cleaned_data:
+                    if (
+                        hasattr(self.form, "cleaned_data")
+                        and field in self.form.cleaned_data
+                    ):
                         # Get value for ModelChoiceField or ChoiceField
-                        value = getattr(self.form.cleaned_data[field], 'pk',
-                                        self.form.cleaned_data[field])
+                        value = getattr(
+                            self.form.cleaned_data[field],
+                            "pk",
+                            self.form.cleaned_data[field],
+                        )
                         if value == yesno.get(choice[0], choice[0]):
                             new_choice.is_selected = True
                             selected = True
@@ -234,11 +237,12 @@ class FilteredListView(FormMixin, ListView):
                         new_choice.is_selected = False
                     new_filter.choices.append(new_choice)
 
-                if not self.form.fields[field].required and \
-                        not [c for c in new_filter.choices
-                             if c.value == '-1' or c.value == '']:
-                    all_choice = Munch(value='', label=_('All'),
-                                       is_selected=(not selected))
+                if not self.form.fields[field].required and not [
+                    c for c in new_filter.choices if c.value == "-1" or c.value == ""
+                ]:
+                    all_choice = Munch(
+                        value="", label=_("All"), is_selected=(not selected)
+                    )
                     new_filter.choices.insert(0, all_choice)
                 filters.append(new_filter)
 
