@@ -106,27 +106,31 @@ Several form mixins are provided to cover frequent use cases:
 
 See "mixin" documentation for details.
 
+***********
+Development
+***********
+
+.. code-block:: console
+
+    $ # Launch a postgres DB with:
+    $ docker-compose up -d
+
+    $ # Configure environment variables with
+    $ export PGDATABASE=db PGHOST=localhost PGUSER=postgres PGPASSWORD=password
+
+    $ # Launch tests with
+    $ tox
+
+    $ # Format code with
+    $ tox -e format
+
 *******
 Release
 *******
 
-To prepare a new version:
-
-* Create a branch named ``release/<version>``
-* In a commit, change the ``CHANGELOG`` and ``VERSION`` file to remove the ``.dev0`` and set the date of the release
-* In a second commit, change the ``VERSION`` to the next version number + ``.dev0``
-* Create a PR for your branch
-* When the PR is merged, tag the first commit with the version number, and create a github release using the ``CHANGELOG``
-
-To release a new version (including the wheel)::
-
-    pip install twine
-    python setup.py sdist bdist_wheel
-    twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-
-And after testing everything works fine on the testing repository::
-
-    twine upload dist/*
+Release in GitHub, GitHub Actions should take care of the rest.
+Note that there should be a release draft with a basic PR-based changelog, so
+start from this and iterate.
 
 **********
 Ressources
@@ -134,6 +138,5 @@ Ressources
 
 * Documentation: https://django-generic-filters.readthedocs.io
 * PyPI page: http://pypi.python.org/pypi/django-generic-filters
-* Code repository: https://github.com/novapost/django-generic-filters
-* Bugtracker: https://github.com/novapost/django-generic-filters/issues
-* Continuous integration: https://travis-ci.org/novapost/django-generic-filters
+* Code repository: https://github.com/peopledoc/django-generic-filters
+* Bugtracker: https://github.com/peopledoc/django-generic-filters/issues
