@@ -11,6 +11,9 @@ on:
 jobs:
   build:
 
+    # When testing new Python or Django versions, one should use the
+    # filterwarnings definition of setup.cfg to turn deprecation warnings
+    # into errors.
     strategy:
       matrix:
         include:
