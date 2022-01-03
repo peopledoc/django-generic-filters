@@ -19,4 +19,4 @@ register = template.Library()
 
 @register.filter
 def is_checkbox(form_field):
-    return form_field.field.widget.__class__.__name__ == 'CheckboxInput'
+    return form_field.field.widget.__class__.__name__ == "CheckboxInput"

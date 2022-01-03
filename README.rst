@@ -76,7 +76,7 @@ Example
 .. code-block:: python
 
     from django import forms
-    from django.utils.translation import ugettext_lazy as _
+    from django.utils.translation import gettext_lazy as _
     from django_genericfilters import forms as gf
 
 
@@ -106,34 +106,11 @@ Several form mixins are provided to cover frequent use cases:
 
 See "mixin" documentation for details.
 
-*******
-Release
-*******
-
-To prepare a new version:
-
-* Create a branch named ``release/<version>``
-* In a commit, change the ``CHANGELOG`` and ``VERSION`` file to remove the ``.dev0`` and set the date of the release
-* In a second commit, change the ``VERSION`` to the next version number + ``.dev0``
-* Create a PR for your branch
-* When the PR is merged, tag the first commit with the version number, and create a github release using the ``CHANGELOG``
-
-To release a new version (including the wheel)::
-
-    pip install twine
-    python setup.py sdist bdist_wheel
-    twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-
-And after testing everything works fine on the testing repository::
-
-    twine upload dist/*
-
 **********
 Ressources
 **********
 
 * Documentation: https://django-generic-filters.readthedocs.io
 * PyPI page: http://pypi.python.org/pypi/django-generic-filters
-* Code repository: https://github.com/novapost/django-generic-filters
-* Bugtracker: https://github.com/novapost/django-generic-filters/issues
-* Continuous integration: https://travis-ci.org/novapost/django-generic-filters
+* Code repository: https://github.com/peopledoc/django-generic-filters
+* Bugtracker: https://github.com/peopledoc/django-generic-filters/issues

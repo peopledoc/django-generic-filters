@@ -4,7 +4,7 @@ and filtered queryset.
 
 """
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from .fields import *  # NOQA
 
@@ -13,10 +13,10 @@ class QueryFormMixin(object):
     """
     Mixin implementing a query parameters for filtering results.
     """
+
     def __init__(self, *args, **kwargs):
         super(QueryFormMixin, self).__init__(*args, **kwargs)
-        self.fields['query'] = forms.CharField(required=False,
-                                               widget=forms.HiddenInput)
+        self.fields["query"] = forms.CharField(required=False, widget=forms.HiddenInput)
 
 
 class OrderFormMixin(object):
@@ -28,21 +28,22 @@ class OrderFormMixin(object):
     def __init__(self, *args, **kwargs):
         super(OrderFormMixin, self).__init__(*args, **kwargs)
 
-        self.fields['order_by'] = forms.ChoiceField(
-            label=_('order by'),
+        self.fields["order_by"] = forms.ChoiceField(
+            label=_("order by"),
             required=False,
             widget=forms.HiddenInput,
-            choices=self.get_order_by_choices())
-        self.fields['order_reverse'] = forms.BooleanField(
-            label=_('order by'),
-            required=False,
-            widget=forms.HiddenInput)
+            choices=self.get_order_by_choices(),
+        )
+        self.fields["order_reverse"] = forms.BooleanField(
+            label=_("order by"), required=False, widget=forms.HiddenInput
+        )
 
     def clean_order_by(self):
-        if self['order_by'].html_name not in self.data:
-            return self.initial.get(self['order_by'].html_name,
-                                    self.fields['order_by'].initial)
-        return self.cleaned_data['order_by']
+        if self["order_by"].html_name not in self.data:
+            return self.initial.get(
+                self["order_by"].html_name, self.fields["order_by"].initial
+            )
+        return self.cleaned_data["order_by"]
 
     def get_order_by_choices(self):
         """
@@ -61,8 +62,7 @@ class OrderFormMixin(object):
                         ("2", "choice2")]
         """
 
-        raise NotImplementedError(
-            _("Don't forget to implements get_order_by_choices"))
+        raise NotImplementedError(_("Don't forget to implements get_order_by_choices"))
 
 
 def clean_yesno(value):

@@ -23,14 +23,11 @@ from django import template
 from django.template.base import FilterExpression
 from django.utils.html import conditional_escape
 
-
 register = template.Library()
 
 
 def token_value(bits, parser):
-    """Parse ``bits`` string and return string or variable (FilterExpression).
-
-    """
+    """Parse ``bits`` string and return string or variable (FilterExpression)."""
     if bits[0] in ('"', "'"):  # Parse a string.
         if not (bits[0] == bits[-1] or len(bits) < 2):
             raise template.TemplateSyntaxError("Malformed argument %r" % bits)
@@ -66,19 +63,17 @@ def token_kwargs(bits, parser):
     kwargs = {}
     while bits:
         match = kwarg_re.match(bits[0])
-        if not match or not match.group('key') or not match.group('value'):
+        if not match or not match.group("key") or not match.group("value"):
             return kwargs
-        key = token_value(match.group('key'), parser)
-        value = token_value(match.group('value'), parser)
+        key = token_value(match.group("key"), parser)
+        value = token_value(match.group("value"), parser)
         kwargs[key] = value
         del bits[:1]
     return kwargs
 
 
 def update_query_string(url, updates):
-    """Update query string in ``url`` with ``updates``.
-
-    """
+    """Update query string in ``url`` with ``updates``."""
     url_parts = list(urllib.parse.urlparse(str(url)))
     query_dict = urllib.parse.parse_qs(url_parts[4])
     query_dict.update(updates)
@@ -94,7 +89,7 @@ class UpdateQueryStringNode(template.Node):
 
     def render(self, context):
         if self.url is None:  # Fallback to current URL.
-            request = context['request']
+            request = context["request"]
             url = request.get_full_path()
         else:
             url = self.url
@@ -123,16 +118,15 @@ class UpdateQueryStringNode(template.Node):
         return new_url
 
 
-@register.tag('update_query_string')
+@register.tag("update_query_string")
 def tag_update_query_string(parser, token):
-    """Return URL with updated querystring.
-
-    """
+    """Return URL with updated querystring."""
     bits = token.split_contents()
     # Quickly check number of arguments.
     if len(bits) < 2:
-        raise template.TemplateSyntaxError("'update_query_string' tag "
-                                           "requires at least two arguments")
+        raise template.TemplateSyntaxError(
+            "'update_query_string' tag " "requires at least two arguments"
+        )
     # Parse options.
     options = {}
     tag_name = bits[0]
@@ -141,17 +135,21 @@ def tag_update_query_string(parser, token):
         option = remaining_bits.pop(0)
         if option in options:
             raise template.TemplateSyntaxError(
-                'The %r option was specified more than once.' % option)
-        if option == 'with':  # "with" is followed by keyword arguments
+                "The %r option was specified more than once." % option
+            )
+        if option == "with":  # "with" is followed by keyword arguments
             value = token_kwargs(remaining_bits, parser)
             if not value:
-                raise template.TemplateSyntaxError('"with" in %r tag needs at '
-                                                   'least one keyword '
-                                                   'argument.' % tag_name)
+                raise template.TemplateSyntaxError(
+                    '"with" in %r tag needs at '
+                    "least one keyword "
+                    "argument." % tag_name
+                )
         else:
             raise template.TemplateSyntaxError(
-                'Unknown argument for %r tag: %r.' % (bits[0], option))
+                "Unknown argument for %r tag: %r." % (bits[0], option)
+            )
         options[option] = value
-    qs_updates = options.get('with', {})
+    qs_updates = options.get("with", {})
     url = None  # For now, we do not support URL as argument.
     return UpdateQueryStringNode(url=url, qs_updates=qs_updates)
