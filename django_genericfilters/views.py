@@ -228,7 +228,8 @@ class FilteredListView(FormMixin, ListView):
                             "pk",
                             self.form.cleaned_data[field],
                         )
-                        if value == yesno.get(choice[0], choice[0]):
+                        choice_value = getattr(choice[0], "value", choice[0])
+                        if value == yesno.get(choice_value, choice_value):
                             new_choice.is_selected = True
                             selected = True
                         else:
