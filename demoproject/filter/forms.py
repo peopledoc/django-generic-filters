@@ -14,7 +14,7 @@ class UserListForm(gf.FilteredForm):
 
     def get_order_by_choices(self):
         return [
-            ("date_joined", _(u"date joined")),
-            ("last_login", _(u"last login")),
-            ("last_name", _(u"Name")),
+            ("date_joined", _("date joined")),
+            ("last_login", _("last login")),
+            ("last_name", _("Name")),
         ]
