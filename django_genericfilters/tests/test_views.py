@@ -464,7 +464,9 @@ class FilteredViewTestCase(TestCase):
         filters = view.get_filters()
         # assert peopleA is selected on the filter choices
         assert peopleA.pk == next(
-            f.value.value for f in filters[0].choices if f.is_selected
+            getattr(f.value, "value", f.value)
+            for f in filters[0].choices
+            if f.is_selected
         )
 
     def test_filtered_list_view__multiplemodelchoice(self):
