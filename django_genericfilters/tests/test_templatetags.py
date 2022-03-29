@@ -57,7 +57,7 @@ class TemplateTagTestCase(unittest.TestCase):
                     }
                 )
             ),
-            u"/fake?page=2",
+            "/fake?page=2",
         )
 
     def test_is_checkbox(self):

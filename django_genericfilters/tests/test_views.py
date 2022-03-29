@@ -445,6 +445,30 @@ class FilteredViewTestCase(TestCase):
             str(view.form_valid(view.form).query),
         )
 
+    def test_filtered_list_view__modelchoice_unhashable(self):
+        """
+        On Django3, the ModelChoiceIteratorValue is not hashable
+        causing an error on get_filters() method
+        """
+        peopleA = People.objects.create(name="fakeA")
+
+        view = views.FilteredListView(
+            qs_filter_fields={"city": "city", "people": "parent"},
+            filter_fields=["parent"],
+            form_class=self.Form,
+            model=Something,
+        )
+        data = {"parent": peopleA.pk}
+        setup_view(view, RequestFactory().get("/fake", data))
+        assert view.form.is_valid()
+        filters = view.get_filters()
+        # assert peopleA is selected on the filter choices
+        assert peopleA.pk == next(
+            getattr(f.value, "value", f.value)
+            for f in filters[0].choices
+            if f.is_selected
+        )
+
     def test_filtered_list_view__multiplemodelchoice(self):
         """
         FIXED : filtered fields has HiddenWidget widgets that cannot handle
